@@ -1,0 +1,29 @@
+<div xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  class="actions_block"
+  id="#{widget.id}">
+
+  <h:outputText value="#{messages['label.summary.survey.status']} "/>
+  <div>
+    <c:if test="#{value.currentLifeCycleState == 'project'}">
+      <h:outputText styleClass="status project" value="#{messages[currentDocument.currentLifeCycleState]}" />
+      <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.publish']}"
+        action="#{surveyActions.publishSurvey(value)}"
+        immediate="true" />
+    </c:if>
+
+    <c:if test="#{value.currentLifeCycleState == 'published'}">
+      <h:outputText styleClass="status published" value="#{messages[currentDocument.currentLifeCycleState]}" />
+      <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.close']}"
+        action="#{surveyActions.closeSurvey(value)}"
+        immediate="true" />
+    </c:if>
+
+    <c:if test="#{value.currentLifeCycleState == 'closed'}">
+      <h:outputText styleClass="status closed" value="#{messages[currentDocument.currentLifeCycleState]}" />
+    </c:if>
+
+  </div>
+</div>

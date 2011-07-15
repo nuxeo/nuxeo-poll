@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.nuxeo.ecm.survey.layouts">
+
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+    point="widgets">
+
+    <widget name="survey_question" type="text">
+      <labels>
+        <label mode="any">label.survey.question</label>
+      </labels>
+      <translated>true</translated>
+      <fields>
+        <field>dc:title</field>
+      </fields>
+      <properties widgetMode="edit">
+        <property name="styleClass">dataInputText</property>
+        <property name="required">true</property>
+      </properties>
+    </widget>
+
+    <widget name="survey_answers" type="list">
+      <labels>
+        <label mode="any">label.survey.answers</label>
+      </labels>
+      <translated>true</translated>
+      <fields>
+        <field>survey:answers</field>
+      </fields>
+      <properties widgetMode="edit">
+        <property name="required">true</property>
+      </properties>
+      <subWidgets>
+        <widget name="listItem" type="text">
+          <fields>
+            <field></field>
+          </fields>
+          <labels>
+            <label mode="any"></label>
+          </labels>
+          <properties widgetMode="edit">
+            <property name="required">true</property>
+          </properties>
+        </widget>
+      </subWidgets>
+    </widget>
+
+    <widget name="begin_date" type="datetime">
+      <labels>
+        <label mode="any">label.survey.beginDate</label>
+      </labels>
+      <translated>true</translated>
+      <fields>
+        <field>survey:begin_date</field>
+      </fields>
+      <properties widgetMode="any">
+        <property name="pattern">#{nxu:basicDateFormater()}</property>
+      </properties>
+      <properties widgetMode="edit">
+        <property name="format">#{nxu:basicDateFormater()}</property>
+      </properties>
+    </widget>
+
+    <widget name="end_date" type="datetime">
+      <labels>
+        <label mode="any">label.survey.endDate</label>
+      </labels>
+      <translated>true</translated>
+      <fields>
+        <field>dc:expired</field>
+      </fields>
+      <properties widgetMode="any">
+        <property name="pattern">#{nxu:basicDateFormater()}</property>
+      </properties>
+      <properties widgetMode="edit">
+        <property name="format">#{nxu:basicDateFormater()}</property>
+      </properties>
+    </widget>
+
+    <widget name="summary_publish_survey" type="template">
+      <labels>
+        <label mode="any"></label>
+      </labels>
+      <translated>false</translated>
+      <properties widgetMode="any">
+        <property name="template">
+          /widgets/publish_survey_widget_template.xhtml
+        </property>
+      </properties>
+    </widget>
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
+    point="layouts">
+
+    <layout name="survey_heading">
+      <templates>
+        <template mode="any">/layouts/layout_default_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <widget>survey_question</widget>
+        </row>
+        <row>
+          <widget>description</widget>
+        </row>
+      </rows>
+    </layout>
+
+    <layout name="survey">
+      <templates>
+        <template mode="any">/layouts/layout_default_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <widget>survey_answers</widget>
+        </row>
+        <row>
+          <widget>begin_date</widget>
+        </row>
+        <row>
+          <widget>end_date</widget>
+        </row>
+      </rows>
+    </layout>
+
+    <layout name="survey_dublincore">
+      <templates>
+        <template mode="any">/layouts/layout_default_template.xhtml</template>
+      </templates>
+      <rows>
+        <row>
+          <widget>subjects</widget>
+        </row>
+        <row>
+          <widget>created</widget>
+        </row>
+        <row>
+          <widget>modified</widget>
+        </row>
+        <row>
+          <widget>author</widget>
+        </row>
+        <row>
+          <widget>contributors</widget>
+        </row>
+        <row>
+          <widget>lastContributor</widget>
+        </row>
+      </rows>
+    </layout>
+
+    <!-- summary layout -->
+    <layout name="survey_summary_layout">
+      <templates>
+        <template mode="any">/layouts/layout_summary_template.xhtml</template>
+      </templates>
+      <rows>
+      <row>
+      </row>
+        <row>
+          <widget>summary_current_document_description</widget>
+          <widget>summary_current_document_view</widget>
+        </row>
+        <row>
+          <widget>summary_publish_survey</widget>
+          <widget>summary_current_document_actions</widget>
+          <widget>summary_current_document_tagging</widget>
+        </row>
+      </rows>
+    </layout>
+
+  </extension>
+
+</component>

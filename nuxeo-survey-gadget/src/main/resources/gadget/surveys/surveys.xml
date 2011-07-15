@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Nuxeo Surveys"
+    description=""
+    author="troger" author_email="troger@nuxeo.com">
+    <#include "dynamic-translations.ftl"/>
+    <Require feature="dynamic-height" />
+    <#include "default-oauth-prefs.ftl"/>
+  </ModulePrefs>
+  <Content type="html">
+
+<![CDATA[
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="${specDirectoryUrl}gadget-common.css"/>
+
+  <!-- insert JS Context -->
+  ${jsContext}
+
+  <script src="${specDirectoryUrl}default-automation-request.js"></script>
+  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/jquery.js"></script>
+  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/flot/jquery.flot.min.js"></script>
+  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/flot/jquery.flot.pie.min.js"></script>
+
+  <script>
+    var prefs = new gadgets.Prefs();
+    // configure Automation REST call
+    var NXRequestParams= { operationId : 'Services.GetAvailableSurveysForUser',
+      operationParams: {
+        onlyUnansweredSurveys: true
+      },
+      operationContext: {},
+      operationCallback: storeSurveys
+    };
+
+    var surveys = [];
+    var currentSurveyIndex = 0;
+
+    function storeSurveys(response, params) {
+      surveys = response.data.surveys;
+      console.log(response.data);
+      console.log(surveys);
+      currentSurveyIndex = 0;
+      if (surveys.length > 0) {
+        displayCurrentSurvey();
+      } else {
+        displayNoSurvey();
+      }
+    }
+
+    function displayCurrentSurvey() {
+      displaySurvey(surveys[currentSurveyIndex]);
+    }
+
+    function displaySurvey(survey) {
+      $('#surveyQuestion').empty();
+      $('#surveyResult').empty();
+
+      if (survey.answered == true) {
+        displaySurveyResultsHtml(survey);
+      } else {
+        displaySurveyQuestionHtml(survey);
+      }
+
+      // create the navigation bar
+      createNavigationBar();
+
+      gadgets.window.adjustHeight();
+    }
+
+    function displaySurveyQuestionHtml(survey) {
+      var surveyHtml = '<p class="question">' + survey.question + '</p>';
+      surveyHtml += '<div class="answers">';
+      surveyHtml += '<ul>'
+      for (var i = 0; i < survey.answers.length; i++) {
+        surveyHtml += '<li>';
+        surveyHtml += '<input type="radio" name="answers" value="' + i + '"';
+        if (i == 0) {
+          surveyHtml += ' checked="checked"';
+        }
+        surveyHtml += '>' + survey.answers[i];
+        surveyHtml += '</li>';
+      }
+      surveyHtml += '</ul>';
+      surveyHtml += '</div>';
+      surveyHtml += '<p><a class="answerButton" href="javascript:answerSurvey()">' + prefs.getMsg('command.answer.survey') + '</a></p>';
+
+      $('#surveyQuestion').html(surveyHtml);
+    }
+
+    function displaySurveyResultsHtml(survey) {
+      var data = [];
+      var resultsByAnswer = survey.resultsByAnswer;
+      for( var i = 0; i < resultsByAnswer.length; i++) {
+        data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
+      }
+
+      $.plot($("#surveyResult"), data,
+        {
+          series: {
+            pie: {
+              show: true
+            }
+          }
+        });
+    }
+
+    function createNavigationBar() {
+      if (surveys.length <= 0) {
+        return;
+      }
+
+      var htmlContent = '';
+      if (currentSurveyIndex > 0) {
+        htmlContent += '<span class="previousButton"><a href="javascript:previousSurvey()">' + prefs.getMsg('command.previous.survey') + '</a></span>';
+      } else {
+        htmlContent += '<span class="previousButton">' + prefs.getMsg('command.previous.survey') + '</span>';
+      }
+      htmlContent += '<span class="surveysInfo">' + surveys.length + ' ' + prefs.getMsg('label.surveys') + '</span>';
+      if (currentSurveyIndex < surveys.length - 1) {
+        htmlContent += '<span class="nextButton"><a href="javascript:nextSurvey()">' + prefs.getMsg('command.next.survey') + '</a></span>';
+      } else {
+        htmlContent += '<span class="nextButton">' + prefs.getMsg('command.next.survey') + '</span>';
+      }
+
+      $('.navigationBar').html(htmlContent);
+    }
+
+    function previousSurvey() {
+      currentSurveyIndex -= 1;
+      displayCurrentSurvey();
+    }
+
+    function nextSurvey() {
+      currentSurveyIndex += 1;
+      displayCurrentSurvey();
+    }
+
+    function displayNoSurvey() {
+      var htmlContent = '<p class="noSurveyLabel">' + prefs.getMsg('label.no.survey.published') + '</p>';
+      $('#surveyQuestion').html(htmlContent);
+    }
+
+    function answerSurvey() {
+      console.log('answerSurvey');
+      console.log($('input[name=answers]:checked'));
+      var answerIndex = $('input[name=answers]:checked').val();
+      if (answerIndex >= 0) {
+        var answerRequestParams = { operationId : 'Services.AnswerSurvey',
+          operationParams: {
+            surveyId: surveys[currentSurveyIndex].surveyId,
+            answerIndex: answerIndex
+          },
+          operationContext: {},
+          operationCallback: afterAnswerSurvey
+        };
+        doAutomationRequest(answerRequestParams);
+      }
+    }
+
+    function afterAnswerSurvey(response, params) {
+      var survey = response.data;
+      // find the survey index
+      for (var i = 0; i < surveys.length; ++i) {
+        if (surveys[i].surveyId == survey.surveyId) {
+          currentSurveyIndex = i;
+          surveys[i] = survey;
+          break;
+        }
+      }
+      displaySurvey(survey);
+    }
+
+    gadgets.util.registerOnLoadHandler(function() {
+      loadSurveys();
+    });
+
+    function loadSurveys() {
+      doAutomationRequest(NXRequestParams);
+    }
+
+  </script>
+  </head>
+  <body>
+
+   <div id="content">
+     <div id="surveyQuestion">
+     </div>
+     <div id="surveyResult" style="width: 250px; height: 250px;">
+     </div>
+
+     <div class="navigationBar">
+     </div>
+     <#include "default-request-controls.ftl"/>
+   </div>
+
+  </body>
+</html>
+]]>
+  </Content>
+</Module>

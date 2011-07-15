@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.nuxeo.ecm.survey.actions">
+
+  <require>org.nuxeo.ecm.platform.preview.actions</require>
+  <require>org.nuxeo.ecm.platform.comment.actions</require>
+  <require>org.nuxeo.ecm.platform.notifications.web.actions</require>
+  <require>org.nuxeo.ecm.platform.actions.relations.web</require>
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="actions">
+
+    <action id="TAB_SURVEYS" link="/incl/tabs/surveys_listing.xhtml" order="150"
+      label="action.view.surveys" icon="/icons/file.gif">
+      <category>TAB_MANAGE_sub_tab</category>
+      <filter-id>display_surveys_tab</filter-id>
+      <filter-id>manage</filter-id>
+    </action>
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+
+    <filter id="display_surveys_tab">
+      <rule grant="true">
+        <permission>Read</permission>
+        <facet>SuperSpace</facet>
+      </rule>
+    </filter>
+
+    <filter id="view_preview" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="denyFilesTab" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="rights" append="true">
+      <rule grant="true">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="publish_document" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="commentable" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="view_relations" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="general_documents" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+    <filter id="manage_subscriptions" append="true">
+      <rule grant="false">
+        <type>Survey</type>
+      </rule>
+    </filter>
+
+  </extension>
+
+</component>
