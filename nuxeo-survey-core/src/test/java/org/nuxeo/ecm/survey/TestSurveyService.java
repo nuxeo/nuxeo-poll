@@ -69,7 +69,8 @@ public class TestSurveyService extends AbstractSurveyTest {
     @Test
     public void surveyShouldStoreQuestionAndAnswers() throws ClientException {
         DocumentModel ws = createWorkspace("ws");
-        Survey survey = createSurvey(ws, "survey", "Question 1", "Yes", "No");
+        Survey survey = createPublishedSurvey(ws, "survey", "Question 1",
+                "Yes", "No");
         assertNotNull(survey);
 
         String question = survey.getQuestion();
@@ -81,21 +82,22 @@ public class TestSurveyService extends AbstractSurveyTest {
     }
 
     @Test
-    public void shouldGetAllAvailableSurveys() throws ClientException {
+    public void shouldGetAllPublishedSurveys() throws ClientException {
         DocumentModel ws = createWorkspace("ws1");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        Survey survey1 = createPublishedSurvey(ws, "survey1", "Question 1",
+                "Yes", "No");
         assertNotNull(survey1);
-        Survey survey2 = createSurvey(ws, "survey2", "Question 2", "A", "B",
-                "C");
+        Survey survey2 = createPublishedSurvey(ws, "survey2", "Question 2",
+                "A", "B", "C");
         assertNotNull(survey2);
 
         ws = createWorkspace("ws2");
         addRight(ws, SecurityConstants.READ, "bender");
-        Survey survey3 = createSurvey(ws, "survey3", "Question 3", "AAA", "BB",
-                "C");
+        Survey survey3 = createPublishedSurvey(ws, "survey3", "Question 3",
+                "AAA", "BB", "C");
         assertNotNull(survey3);
-        Survey survey4 = createSurvey(ws, "survey4", "Question 4", "A", "BBB",
-                "CCC");
+        Survey survey4 = createPublishedSurvey(ws, "survey4", "Question 4",
+                "A", "BBB", "CCC");
         assertNotNull(survey4);
 
         List<Survey> surveys = surveyService.getPublishedSurveys(session);
@@ -125,7 +127,8 @@ public class TestSurveyService extends AbstractSurveyTest {
     public void answeringASurveyShouldCreateANewActivity()
             throws ClientException {
         DocumentModel ws = createWorkspace("ws");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        Survey survey1 = createPublishedSurvey(ws, "survey1", "Question 1",
+                "Yes", "No");
         assertNotNull(survey1);
 
         surveyService.answer(session.getPrincipal().getName(), survey1, 1);
@@ -150,7 +153,8 @@ public class TestSurveyService extends AbstractSurveyTest {
     @Test
     public void differentUsersCanAnswerASurvey() throws ClientException {
         DocumentModel ws = createWorkspace("ws");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        Survey survey1 = createPublishedSurvey(ws, "survey1", "Question 1",
+                "Yes", "No");
         assertNotNull(survey1);
 
         surveyService.answer(session.getPrincipal().getName(), survey1, 1);

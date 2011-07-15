@@ -12,6 +12,7 @@
 
 package org.nuxeo.ecm.survey;
 
+import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_QUESTION_PROPERTY;
 
@@ -73,14 +74,16 @@ public class AbstractSurveyTest {
         return doc;
     }
 
-    protected Survey createSurvey(DocumentModel superSpace, String name,
-            String question, String... answers) throws ClientException {
+    protected Survey createPublishedSurvey(DocumentModel superSpace,
+            String name, String question, String... answers)
+            throws ClientException {
         DocumentModel survey = session.createDocumentModel(
                 surveyService.getSurveysContainer(superSpace).getPathAsString(),
                 name, SURVEY_DOCUMENT_TYPE);
         survey.setPropertyValue(SURVEY_QUESTION_PROPERTY, question);
         survey.setPropertyValue(Constants.SURVEY_ANSWERS_PROPERTY, answers);
         survey = session.createDocument(survey);
+        survey.followTransition(PUBLISH_SURVEY_TRANSITION);
         session.save();
         return survey.getAdapter(Survey.class);
     }

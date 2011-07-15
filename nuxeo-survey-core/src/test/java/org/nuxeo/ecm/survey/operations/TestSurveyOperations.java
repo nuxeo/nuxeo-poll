@@ -94,15 +94,16 @@ public class TestSurveyOperations extends AbstractSurveyTest {
     @Test
     public void shouldReturnOnlyUnansweredSurveys() throws Exception {
         DocumentModel ws = createWorkspace("ws1");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        Survey survey1 = createPublishedSurvey(ws, "survey1", "Question 1",
+                "Yes", "No");
         assertNotNull(survey1);
-        Survey survey2 = createSurvey(ws, "survey2", "Question 2", "A", "B",
-                "C");
+        Survey survey2 = createPublishedSurvey(ws, "survey2", "Question 2",
+                "A", "B", "C");
         assertNotNull(survey2);
 
         ws = createWorkspace("ws2");
-        Survey survey3 = createSurvey(ws, "survey3", "Question 3", "AAA", "BB",
-                "C");
+        Survey survey3 = createPublishedSurvey(ws, "survey3", "Question 3",
+                "AAA", "BB", "C");
         assertNotNull(survey3);
 
         // answer third survey
@@ -114,8 +115,7 @@ public class TestSurveyOperations extends AbstractSurveyTest {
         assertNotNull(ctx);
 
         OperationChain chain = new OperationChain("testSurveyOperation");
-        chain.add(GetPublishedSurveys.ID).set("onlyUnansweredSurveys",
-                true);
+        chain.add(GetPublishedSurveys.ID).set("onlyUnansweredSurveys", true);
         Blob result = (Blob) service.run(ctx, chain);
         assertNotNull(result);
         String json = result.getString();
