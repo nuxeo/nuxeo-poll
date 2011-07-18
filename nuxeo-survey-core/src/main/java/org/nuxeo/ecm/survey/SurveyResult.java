@@ -21,18 +21,14 @@ import java.util.Map;
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-public class SurveyResult {
+public final class SurveyResult {
 
     private String surveyId;
 
-    private long resultsCount;
-
     private Map<String, Long> resultsByAnswer = new HashMap<String, Long>();
 
-    public SurveyResult(String surveyId, long resultsCount,
-            Map<String, Long> resultsByAnswer) {
+    public SurveyResult(String surveyId, Map<String, Long> resultsByAnswer) {
         this.surveyId = surveyId;
-        this.resultsCount = resultsCount;
         this.resultsByAnswer = resultsByAnswer;
     }
 
@@ -41,6 +37,10 @@ public class SurveyResult {
     }
 
     public long getResultsCount() {
+        long resultsCount = 0;
+        for (Long result : resultsByAnswer.values()) {
+            resultsCount += result;
+        }
         return resultsCount;
     }
 

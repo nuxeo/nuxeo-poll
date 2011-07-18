@@ -14,6 +14,7 @@ package org.nuxeo.ecm.survey.operations;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import net.sf.json.JSONArray;
@@ -75,7 +76,7 @@ public class TestSurveyOperations extends AbstractSurveyTest {
     protected EventService eventService;
 
     @Test
-    public void shouldReturnNoAvailableSurvey() throws Exception {
+    public void shouldReturnNoPublishedSurvey() throws Exception {
         OperationContext ctx = new OperationContext(session);
         assertNotNull(ctx);
 
@@ -124,6 +125,108 @@ public class TestSurveyOperations extends AbstractSurveyTest {
         JSONObject object = JSONObject.fromObject(json);
         JSONArray surveys = object.getJSONArray("surveys");
         assertEquals(2, surveys.size());
+    }
+
+    @Test
+    public void shouldAnswerSurvey() throws Exception {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey = createPublishedSurvey(ws, "survey", "Question 1",
+                "Yes", "No");
+        assertNotNull(survey);
+
+        OperationContext ctx = new OperationContext(session);
+        assertNotNull(ctx);
+
+        OperationChain chain = new OperationChain("testSurveyOperation");
+        chain.add(AnswerSurvey.ID).set("surveyId", survey.getId()).set(
+                "answerIndex", 1);
+        Blob result = (Blob) service.run(ctx, chain);
+        assertNotNull(result);
+        String json = result.getString();
+        assertNotNull(json);
+
+        JSONObject object = JSONObject.fromObject(json);
+        assertEquals(survey.getId(), object.get("surveyId"));
+        assertEquals(true, object.get("answered"));
+        JSONObject surveyResult = (JSONObject) object.get("result");
+        assertEquals(1, surveyResult.get("resultsCount"));
+
+        JSONArray resultsByAnswer = surveyResult.getJSONArray("resultsByAnswer");
+        assertEquals(2, resultsByAnswer.size());
+        JSONObject answer = (JSONObject) resultsByAnswer.get(0);
+        assertEquals(survey.getAnswers()[0], answer.get("answer"));
+        assertEquals(0, answer.get("result"));
+        answer = (JSONObject) resultsByAnswer.get(1);
+        assertEquals(survey.getAnswers()[1], answer.get("answer"));
+        assertEquals(1, answer.get("result"));
+    }
+
+    @Test
+    public void shouldGetSurveyWithoutResult() throws Exception {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey = createPublishedSurvey(ws, "survey", "Question 1",
+                "Yes", "No");
+        assertNotNull(survey);
+
+        OperationContext ctx = new OperationContext(session);
+        assertNotNull(ctx);
+
+        OperationChain chain = new OperationChain("testSurveyOperation");
+        chain.add(GetSurvey.ID).set("surveyId", survey.getId());
+        Blob result = (Blob) service.run(ctx, chain);
+        assertNotNull(result);
+        String json = result.getString();
+        assertNotNull(json);
+
+        JSONObject object = JSONObject.fromObject(json);
+        assertEquals(survey.getId(), object.get("surveyId"));
+        assertEquals(false, object.get("answered"));
+        assertEquals(survey.getQuestion(), object.get("question"));
+        JSONArray answers = object.getJSONArray("answers");
+        assertEquals(2, answers.size());
+        assertNull(object.get("result"));
+    }
+
+    @Test
+    public void shouldGetSurveyWithResult() throws Exception {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey = createPublishedSurvey(ws, "survey", "Question 1",
+                "Yes", "No");
+        assertNotNull(survey);
+
+        surveyService.answer(session.getPrincipal().getName(), survey, 0);
+        session.save();
+        eventService.waitForAsyncCompletion();
+
+        OperationContext ctx = new OperationContext(session);
+        assertNotNull(ctx);
+
+        OperationChain chain = new OperationChain("testSurveyOperation");
+        chain.add(GetSurvey.ID).set("surveyId", survey.getId()).set(
+                "withResult", true);
+        Blob result = (Blob) service.run(ctx, chain);
+        assertNotNull(result);
+        String json = result.getString();
+        assertNotNull(json);
+
+        JSONObject object = JSONObject.fromObject(json);
+        assertEquals(survey.getId(), object.get("surveyId"));
+        assertEquals(true, object.get("answered"));
+        assertEquals(survey.getQuestion(), object.get("question"));
+        JSONArray answers = object.getJSONArray("answers");
+        assertEquals(2, answers.size());
+
+        JSONObject surveyResult = (JSONObject) object.get("result");
+        assertNotNull(surveyResult);
+        assertEquals(1, surveyResult.get("resultsCount"));
+        JSONArray resultsByAnswer = surveyResult.getJSONArray("resultsByAnswer");
+        assertEquals(2, resultsByAnswer.size());
+        JSONObject answer = (JSONObject) resultsByAnswer.get(0);
+        assertEquals(survey.getAnswers()[0], answer.get("answer"));
+        assertEquals(1, answer.get("result"));
+        answer = (JSONObject) resultsByAnswer.get(1);
+        assertEquals(survey.getAnswers()[1], answer.get("answer"));
+        assertEquals(0, answer.get("result"));
     }
 
 }

@@ -31,6 +31,9 @@ public class SurveyHelper {
         // helper class
     }
 
+    /**
+     * Returns a {@link Survey} object from the given {@code surveyDocument}.
+     */
     public static Survey toSurvey(DocumentModel surveyDocument) {
         return surveyDocument.getAdapter(Survey.class);
     }
@@ -38,13 +41,20 @@ public class SurveyHelper {
     /**
      * Returns a JSONObject for the given {@code survey}.
      */
-    public static JSONObject toJSON(Survey survey) {
+    public static JSONObject toJSON(Survey survey, boolean answered) {
         JSONObject object = new JSONObject();
         object.put("surveyId", survey.getId());
-        object.put("answered", false);
+        object.put("answered", answered);
         object.put("question", survey.getQuestion());
         object.put("answers", survey.getAnswers());
         return object;
+    }
+
+    /**
+     * Returns a JSONObject for the given unanswered {@code survey}.
+     */
+    public static JSONObject toJSON(Survey survey) {
+        return toJSON(survey, false);
     }
 
     /**
@@ -52,8 +62,6 @@ public class SurveyHelper {
      */
     public static JSONObject toJSON(SurveyResult surveyResult) {
         JSONObject object = new JSONObject();
-        object.put("surveyId", surveyResult.getSurveyId());
-        object.put("answered", true);
         object.put("resultsCount", surveyResult.getResultsCount());
 
         JSONArray resultsByAnswer = new JSONArray();
@@ -72,11 +80,19 @@ public class SurveyHelper {
      * Returns a JSONObject for the given {@code survey} and
      * {@code surveyResult}.
      */
-    public static JSONObject toJSON(Survey survey, SurveyResult SurveyResult) {
-        JSONObject object = new JSONObject();
-        object.put("survey", toJSON(survey));
-        object.put("surveyResult", toJSON(SurveyResult));
+    public static JSONObject toJSON(Survey survey, SurveyResult surveyResult,
+            boolean answered) {
+        JSONObject object = toJSON(survey, answered);
+        object.put("result", toJSON(surveyResult));
         return object;
+    }
+
+    /**
+     * Returns a JSONObject for the given unanswered {@code survey} and
+     * {@code surveyResult}.
+     */
+    public static JSONObject toJSON(Survey survey, SurveyResult surveyResult) {
+        return toJSON(survey, surveyResult, false);
     }
 
 }

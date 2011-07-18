@@ -184,8 +184,7 @@ public class SurveyServiceImpl implements SurveyService {
             resultsByAnswer.put(activity.getObject(), result);
         }
 
-        return new SurveyResult(survey.getId(), activities.size(),
-                resultsByAnswer);
+        return new SurveyResult(survey.getId(), resultsByAnswer);
     }
 
     @Override

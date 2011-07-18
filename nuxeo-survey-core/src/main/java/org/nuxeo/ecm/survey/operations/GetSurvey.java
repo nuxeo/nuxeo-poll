@@ -15,6 +15,8 @@ package org.nuxeo.ecm.survey.operations;
 import static org.nuxeo.ecm.survey.SurveyHelper.toJSON;
 import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
 
+import net.sf.json.JSONObject;
+
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -30,16 +32,19 @@ import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
 
 /**
- * Operation to answer a Survey.
+ * Operation to get a Survey.
+ * <p>
+ * Returns also the {@link SurveyResult} for the survey, If the param
+ * {@code withResult} is set to {@code true}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-@Operation(id = AnswerSurvey.ID, category = Constants.CAT_SERVICES, label = "Answer a survey", description = "Answer a survey."
-        + "The surveyId and answerIndex are required parameters.")
-public class AnswerSurvey {
+@Operation(id = GetSurvey.ID, category = Constants.CAT_SERVICES, label = "Get a survey", description = "Get a survey based on its id."
+        + "Returns also the survey result if the parameter 'withResult' is 'true'.")
+public class GetSurvey {
 
-    public static final String ID = "Services.AnswerSurvey";
+    public static final String ID = "Services.GetSurvey";
 
     @Context
     protected CoreSession session;
@@ -50,28 +55,25 @@ public class AnswerSurvey {
     @Param(name = "surveyId")
     protected String surveyId;
 
-    @Param(name = "answerIndex")
-    protected Integer answerIndex;
+    @Param(name = "withResult", required = false)
+    protected Boolean withResult = false;
 
     @OperationMethod
     public Blob run() throws Exception {
         DocumentModel surveyDocument = session.getDocument(new IdRef(surveyId));
         Survey survey = toSurvey(surveyDocument);
-        SurveyResult surveyResult = surveyService.getResultFor(survey);
 
-        surveyService.answer(session.getPrincipal().getName(), survey,
-                answerIndex);
+        boolean alreadyAnswered = surveyService.hasUserAnswered(
+                session.getPrincipal().getName(), survey);
 
-        // add the answer to the existing result
-        String[] answers = survey.getAnswers();
-        String answer = answers[answerIndex];
-        Long result = surveyResult.getResultsByAnswer().get(answer);
-        if (result == null) {
-            result = 0L;
+        JSONObject json;
+        if (withResult) {
+            SurveyResult surveyResult = surveyService.getResultFor(survey);
+            json = toJSON(survey, surveyResult, alreadyAnswered);
+        } else {
+            json = toJSON(survey, alreadyAnswered);
         }
-        surveyResult.getResultsByAnswer().put(answer, result + 1);
-        return new StringBlob(toJSON(survey, surveyResult, true).toString(),
-                "application/json");
+        return new StringBlob(json.toString(), "application/json");
     }
 
 }

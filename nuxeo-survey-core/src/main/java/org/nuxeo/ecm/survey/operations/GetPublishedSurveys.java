@@ -12,6 +12,8 @@
 
 package org.nuxeo.ecm.survey.operations;
 
+import static org.nuxeo.ecm.survey.SurveyHelper.toJSON;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -29,7 +31,6 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.survey.Survey;
-import org.nuxeo.ecm.survey.SurveyHelper;
 import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
 
@@ -84,12 +85,12 @@ public class GetPublishedSurveys {
     protected void writeAnsweredSurvey(JSONArray array, Survey survey)
             throws ClientException, IOException {
         SurveyResult surveyResult = surveyService.getResultFor(survey);
-        array.add(SurveyHelper.toJSON(surveyResult));
+        array.add(toJSON(survey, surveyResult, true));
     }
 
     protected void writeUnansweredSurvey(JSONArray array, Survey survey)
             throws IOException, ClientException {
-        array.add(SurveyHelper.toJSON(survey));
+        array.add(toJSON(survey));
     }
 
 }
