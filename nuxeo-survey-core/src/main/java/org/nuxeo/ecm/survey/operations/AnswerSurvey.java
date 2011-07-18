@@ -15,6 +15,8 @@ package org.nuxeo.ecm.survey.operations;
 import static org.nuxeo.ecm.survey.SurveyHelper.toJSON;
 import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
 
+import java.io.ByteArrayInputStream;
+
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -24,7 +26,7 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
+import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
 import org.nuxeo.ecm.survey.Survey;
 import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
@@ -70,7 +72,8 @@ public class AnswerSurvey {
             result = 0L;
         }
         surveyResult.getResultsByAnswer().put(answer, result + 1);
-        return new StringBlob(toJSON(survey, surveyResult, true).toString(),
+        return new InputStreamBlob(new ByteArrayInputStream(toJSON(survey,
+                surveyResult, true).toString().getBytes("UTF-8")),
                 "application/json");
     }
 

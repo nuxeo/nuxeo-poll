@@ -14,6 +14,7 @@ package org.nuxeo.ecm.survey.operations;
 
 import static org.nuxeo.ecm.survey.SurveyHelper.toJSON;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
+import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
 import org.nuxeo.ecm.survey.Survey;
 import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
@@ -67,7 +68,9 @@ public class GetPublishedSurveys {
 
         JSONObject object = new JSONObject();
         object.put("surveys", array);
-        return new StringBlob(object.toString(), "application/json");
+
+        return new InputStreamBlob(new ByteArrayInputStream(
+                object.toString().getBytes("UTF-8")), "application/json");
     }
 
     protected void writeSurvey(JSONArray array, Survey survey)
