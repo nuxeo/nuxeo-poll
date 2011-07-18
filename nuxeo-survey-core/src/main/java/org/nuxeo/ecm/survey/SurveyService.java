@@ -12,6 +12,7 @@
 
 package org.nuxeo.ecm.survey;
 
+import java.util.Date;
 import java.util.List;
 
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -55,6 +56,34 @@ public interface SurveyService {
      * Returns the current {@code SurveyResult} for the given {@code survey}.
      */
     SurveyResult getResultFor(Survey survey);
+
+    /**
+     * Publish the {@code survey}. The survey will be available through the
+     * {@link #getPublishedSurveys} method.
+     * <p>
+     * The begin date of the survey is set to now.
+     *
+     * @return the updated Survey
+     */
+    Survey publishSurvey(Survey survey);
+
+    /**
+     * Close the {@code survey}.
+     * <p>
+     * The end date of the survey is set to now.
+     *
+     * @return the updated Survey
+     */
+    Survey closeSurvey(Survey survey);
+
+    /**
+     * Update the status of the {@code survey} according to the given
+     * {@code date}.
+     * <p>
+     * The survey can be published or closed according to its begin date and end
+     * date.
+     */
+    Survey updateSurveyStatus(Survey survey, Date date);
 
     // activity summary for a survey
 

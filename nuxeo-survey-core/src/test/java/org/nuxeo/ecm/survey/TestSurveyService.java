@@ -13,7 +13,9 @@
 package org.nuxeo.ecm.survey;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.nuxeo.ecm.survey.Constants.ANSWER_SURVEY_VERB;
 
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.activity.Activity;
@@ -79,6 +82,66 @@ public class TestSurveyService extends AbstractSurveyTest {
         assertEquals(2, answers.length);
         assertEquals("Yes", answers[0]);
         assertEquals("No", answers[1]);
+    }
+
+    @Test
+    public void shouldNotGetUnpublishedOrClosedSurveys() throws ClientException {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        assertNotNull(survey1);
+        Survey survey2 = createSurvey(ws, "survey2", "Question 2", "A", "B",
+                "C");
+        assertNotNull(survey2);
+
+        List<Survey> surveys = surveyService.getPublishedSurveys(session);
+        assertNotNull(surveys);
+        assertEquals(0, surveys.size());
+
+        Survey survey3 = createPublishedSurvey(ws, "survey3", "Question 3",
+                "AAA", "BB", "C");
+        assertNotNull(survey3);
+        surveys = surveyService.getPublishedSurveys(session);
+        assertNotNull(surveys);
+        assertEquals(1, surveys.size());
+
+        surveyService.publishSurvey(survey2);
+        surveys = surveyService.getPublishedSurveys(session);
+        assertNotNull(surveys);
+        assertEquals(2, surveys.size());
+
+        surveyService.closeSurvey(survey3);
+        surveys = surveyService.getPublishedSurveys(session);
+        assertNotNull(surveys);
+        assertEquals(1, surveys.size());
+    }
+
+    @Test
+    public void publishingASurveyShouldSetItsBeginDate() throws ClientException {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
+        assertNotNull(survey);
+
+        assertNull(survey.getBeginDate());
+        assertNull(survey.getEndDate());
+
+        survey = surveyService.publishSurvey(survey);
+        assertNotNull(survey.getBeginDate());
+        assertNull(survey.getEndDate());
+    }
+
+    @Test
+    public void closingASurveyShouldSetItsEndDate() throws ClientException {
+        DocumentModel ws = createWorkspace("ws1");
+        Survey survey = createPublishedSurvey(ws, "survey1", "Question 1",
+                "Yes", "No");
+        assertNotNull(survey);
+
+        assertNull(survey.getBeginDate());
+        assertNull(survey.getEndDate());
+
+        survey = surveyService.closeSurvey(survey);
+        assertNull(survey.getBeginDate());
+        assertNotNull(survey.getEndDate());
     }
 
     @Test
@@ -181,6 +244,70 @@ public class TestSurveyService extends AbstractSurveyTest {
         assertTrue(1L == resultsByAnswer.get("Yes"));
 
         changeUser("Administrator");
+    }
+
+    @Test
+    public void shouldChangeStatusToPublishedIfDateAfterBeginDate()
+            throws ClientException {
+        DateTime now = new DateTime();
+        DateTime twoDaysBefore = now.minusDays(2);
+
+        DocumentModel ws = createWorkspace("ws");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1",
+                twoDaysBefore.toDate(), null, "Yes", "No");
+        assertNotNull(survey1);
+        assertTrue(survey1.isInProject());
+
+        survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());
+        assertTrue(survey1.isPublished());
+
+    }
+
+    @Test
+    public void shouldChangeStatusToClosedIfDateAfterEndDate()
+            throws ClientException {
+        DateTime now = new DateTime();
+        DateTime twoDaysBefore = now.minusDays(2);
+
+        DocumentModel ws = createWorkspace("ws");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1", null,
+                twoDaysBefore.toDate(), "Yes", "No");
+        assertNotNull(survey1);
+        survey1 = surveyService.publishSurvey(survey1);
+        assertTrue(survey1.isPublished());
+
+        survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());
+        assertTrue(survey1.isClosed());
+    }
+
+    @Test
+    public void shouldNotUpdateStatus() throws ClientException {
+        DateTime now = new DateTime();
+        DateTime twoDaysAfter = now.plusDays(2);
+
+        DocumentModel ws = createWorkspace("ws");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1",
+                twoDaysAfter.toDate(), null, "Yes", "No");
+        assertNotNull(survey1);
+        assertTrue(survey1.isInProject());
+
+        survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());
+        assertTrue(survey1.isInProject());
+        assertFalse(survey1.isPublished());
+        assertFalse(survey1.isClosed());
+
+        Survey survey2 = createSurvey(ws, "survey2", "Question 2", null,
+                twoDaysAfter.toDate(), "Yes", "No");
+        assertNotNull(survey2);
+        assertTrue(survey2.isInProject());
+        surveyService.publishSurvey(survey2);
+        assertFalse(survey2.isInProject());
+        assertTrue(survey2.isPublished());
+
+        survey2 = surveyService.updateSurveyStatus(survey2, now.toDate());
+        assertTrue(survey2.isPublished());
+        assertFalse(survey2.isInProject());
+        assertFalse(survey2.isClosed());
     }
 
 }

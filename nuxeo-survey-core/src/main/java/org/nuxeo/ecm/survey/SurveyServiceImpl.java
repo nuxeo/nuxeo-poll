@@ -13,13 +13,18 @@
 package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.ANSWER_SURVEY_VERB;
+import static org.nuxeo.ecm.survey.Constants.CLOSE_SURVEY_TRANSITION;
+import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_PUBLISHED_STATE;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.ACTOR_PARAMETER;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.QUERY_TYPE_PARAMETER;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.QueryType.ACTOR_ANSWERS_FOR_SURVEY;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.QueryType.ALL_ANSWERS_FOR_SURVEY;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.SURVEY_ID_PARAMETER;
+import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -96,13 +101,14 @@ public class SurveyServiceImpl implements SurveyService {
     public List<Survey> getPublishedSurveys(CoreSession session) {
         try {
             String query = "SELECT * FROM Document WHERE ecm:primaryType = '%s'"
-                    + " AND ecm:currentLifeCycleState = '%s'";
+                    + " AND ecm:currentLifeCycleState = '%s' ORDER BY %s";
             List<DocumentModel> docs = session.query(String.format(query,
-                    SURVEY_DOCUMENT_TYPE, SURVEY_PUBLISHED_STATE));
+                    SURVEY_DOCUMENT_TYPE, SURVEY_PUBLISHED_STATE,
+                    SURVEY_BEGIN_DATE_PROPERTY));
 
             List<Survey> surveys = new ArrayList<Survey>();
             for (DocumentModel doc : docs) {
-                surveys.add(doc.getAdapter(Survey.class));
+                surveys.add(toSurvey(doc));
             }
             return surveys;
         } catch (ClientException e) {
@@ -132,7 +138,7 @@ public class SurveyServiceImpl implements SurveyService {
         activity.setObject(getAnswer(survey, answerIndex));
         activity.setPublishedDate(new Date());
 
-        DocumentModel surveyDoc = survey.getSurveyDocumentModel();
+        DocumentModel surveyDoc = survey.getSurveyDocument();
         CoreSession session = surveyDoc.getCoreSession();
         EventContext activityEventContext = new ActivityEventContext(session,
                 session.getPrincipal(), activity);
@@ -180,6 +186,54 @@ public class SurveyServiceImpl implements SurveyService {
 
         return new SurveyResult(survey.getId(), activities.size(),
                 resultsByAnswer);
+    }
+
+    @Override
+    public Survey publishSurvey(Survey survey) {
+        try {
+            DocumentModel surveyDocument = survey.getSurveyDocument();
+            CoreSession session = surveyDocument.getCoreSession();
+            surveyDocument.followTransition(PUBLISH_SURVEY_TRANSITION);
+            surveyDocument.setPropertyValue(SURVEY_BEGIN_DATE_PROPERTY,
+                    new Date());
+            surveyDocument = session.saveDocument(surveyDocument);
+            session.save();
+            return toSurvey(surveyDocument);
+        } catch (ClientException e) {
+            throw new ClientRuntimeException(e);
+        }
+    }
+
+    @Override
+    public Survey closeSurvey(Survey survey) {
+        try {
+            DocumentModel surveyDocument = survey.getSurveyDocument();
+            CoreSession session = surveyDocument.getCoreSession();
+            surveyDocument.followTransition(CLOSE_SURVEY_TRANSITION);
+            surveyDocument.setPropertyValue(SURVEY_END_DATE_PROPERTY,
+                    new Date());
+            surveyDocument = session.saveDocument(surveyDocument);
+            session.save();
+            return toSurvey(surveyDocument);
+        } catch (ClientException e) {
+            throw new ClientRuntimeException(e);
+        }
+    }
+
+    @Override
+    public Survey updateSurveyStatus(Survey survey, Date date) {
+        Date beginDate = survey.getBeginDate();
+        Date endDate = survey.getEndDate();
+        if (survey.isInProject()) {
+            if (beginDate != null && date.after(beginDate)) {
+                survey = publishSurvey(survey);
+            }
+        } else if (survey.isPublished()) {
+            if (endDate != null && date.after(endDate)) {
+                survey = closeSurvey(survey);
+            }
+        }
+        return survey;
     }
 
     protected ActivityStreamService getActivityStreamService()

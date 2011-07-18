@@ -14,10 +14,14 @@ package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.SURVEY_ANSWERS_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_CLOSED_STATE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_PROJECT_STATE;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_PUBLISHED_STATE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_QUESTION_PROPERTY;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.nuxeo.ecm.core.api.ClientException;
@@ -55,12 +59,14 @@ public class SurveyAdapter implements Survey {
 
     @Override
     public Date getBeginDate() {
-        return (Date) getPropertyValue(SURVEY_BEGIN_DATE_PROPERTY);
+        Calendar cal = (Calendar) getPropertyValue(SURVEY_BEGIN_DATE_PROPERTY);
+        return cal == null ? null : cal.getTime();
     }
 
     @Override
     public Date getEndDate() {
-        return (Date) getPropertyValue(SURVEY_END_DATE_PROPERTY);
+        Calendar cal = (Calendar) getPropertyValue(SURVEY_END_DATE_PROPERTY);
+        return cal == null ? null : cal.getTime();
     }
 
     @SuppressWarnings("unchecked")
@@ -73,7 +79,30 @@ public class SurveyAdapter implements Survey {
     }
 
     @Override
-    public DocumentModel getSurveyDocumentModel() {
+    public boolean isInProject() {
+        return safeLifeCycleStateCheck(SURVEY_PROJECT_STATE);
+    }
+
+    @Override
+    public boolean isPublished() {
+        return safeLifeCycleStateCheck(SURVEY_PUBLISHED_STATE);
+    }
+
+    @Override
+    public boolean isClosed() {
+        return safeLifeCycleStateCheck(SURVEY_CLOSED_STATE);
+    }
+
+    protected boolean safeLifeCycleStateCheck(String lifeCycleState) {
+        try {
+            return lifeCycleState.equals(surveyDoc.getCurrentLifeCycleState());
+        } catch (ClientException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public DocumentModel getSurveyDocument() {
         return surveyDoc;
     }
 

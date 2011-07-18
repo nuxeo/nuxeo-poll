@@ -10,20 +10,17 @@
  *     Thomas Roger <troger@nuxeo.com>
  */
 
-package org.nuxeo.ecm.survey.operations;
+package org.nuxeo.ecm.survey;
 
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.survey.Survey;
-import org.nuxeo.ecm.survey.SurveyResult;
+import org.nuxeo.ecm.core.api.DocumentModel;
 
 /**
- * Helper methods to deal with {@link Survey} and {@link SurveyResult} in
- * Operations.
+ * Helper methods to deal with {@link Survey} and {@link SurveyResult}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
@@ -34,10 +31,14 @@ public class SurveyHelper {
         // helper class
     }
 
+    public static Survey toSurvey(DocumentModel surveyDocument) {
+        return surveyDocument.getAdapter(Survey.class);
+    }
+
     /**
      * Returns a JSONObject for the given {@code survey}.
      */
-    public static JSONObject toJSON(Survey survey) throws ClientException {
+    public static JSONObject toJSON(Survey survey) {
         JSONObject object = new JSONObject();
         object.put("surveyId", survey.getId());
         object.put("answered", false);
@@ -64,6 +65,17 @@ public class SurveyHelper {
         }
 
         object.put("resultsByAnswer", resultsByAnswer);
+        return object;
+    }
+
+    /**
+     * Returns a JSONObject for the given {@code survey} and
+     * {@code surveyResult}.
+     */
+    public static JSONObject toJSON(Survey survey, SurveyResult SurveyResult) {
+        JSONObject object = new JSONObject();
+        object.put("survey", toJSON(survey));
+        object.put("surveyResult", toJSON(SurveyResult));
         return object;
     }
 

@@ -14,8 +14,6 @@ package org.nuxeo.ecm.survey;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.FRAMEWORK;
-import static org.nuxeo.ecm.survey.Constants.CLOSE_SURVEY_TRANSITION;
-import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
 
 import java.io.Serializable;
@@ -103,14 +101,16 @@ public class SurveyActions implements Serializable {
         toggleCreateForm();
     }
 
+    public Survey toSurvey(DocumentModel survey) {
+        return SurveyHelper.toSurvey(survey);
+    }
+
     public void publishSurvey(DocumentModel survey) throws ClientException {
-        survey.followTransition(PUBLISH_SURVEY_TRANSITION);
-        documentManager.save();
+        surveyService.publishSurvey(toSurvey(survey));
     }
 
     public void closeSurvey(DocumentModel survey) throws ClientException {
-        survey.followTransition(CLOSE_SURVEY_TRANSITION);
-        documentManager.save();
+        surveyService.closeSurvey(toSurvey(survey));
     }
 
 }

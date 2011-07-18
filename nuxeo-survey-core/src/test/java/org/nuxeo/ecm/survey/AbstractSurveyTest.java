@@ -13,8 +13,14 @@
 package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_ANSWERS_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_QUESTION_PROPERTY;
+import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
+
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -36,7 +42,7 @@ import com.google.inject.Inject;
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-public class AbstractSurveyTest {
+public abstract class AbstractSurveyTest {
 
     @Inject
     protected FeaturesRunner featuresRunner;
@@ -74,18 +80,41 @@ public class AbstractSurveyTest {
         return doc;
     }
 
-    protected Survey createPublishedSurvey(DocumentModel superSpace,
-            String name, String question, String... answers)
+    protected Survey createSurvey(DocumentModel superSpace, String name,
+            String question, String... answers) throws ClientException {
+        return createSurvey(superSpace, name, question, null, null, answers);
+    }
+
+    protected Survey createSurvey(DocumentModel superSpace, String name,
+            String question, Date beginDate, Date endDate, String... answers)
             throws ClientException {
         DocumentModel survey = session.createDocumentModel(
                 surveyService.getSurveysContainer(superSpace).getPathAsString(),
                 name, SURVEY_DOCUMENT_TYPE);
         survey.setPropertyValue(SURVEY_QUESTION_PROPERTY, question);
-        survey.setPropertyValue(Constants.SURVEY_ANSWERS_PROPERTY, answers);
+        survey.setPropertyValue(SURVEY_ANSWERS_PROPERTY, answers);
+        survey.setPropertyValue(SURVEY_BEGIN_DATE_PROPERTY, beginDate);
+        survey.setPropertyValue(SURVEY_END_DATE_PROPERTY, endDate);
         survey = session.createDocument(survey);
-        survey.followTransition(PUBLISH_SURVEY_TRANSITION);
         session.save();
-        return survey.getAdapter(Survey.class);
+        return toSurvey(survey);
+    }
+
+    protected Survey createPublishedSurvey(DocumentModel superSpace,
+            String name, String question, String... answers)
+            throws ClientException {
+        return createPublishedSurvey(superSpace, name, question, null, null,
+                answers);
+    }
+
+    protected Survey createPublishedSurvey(DocumentModel superSpace,
+            String name, String question, Date beginDate, Date endDate,
+            String... answers) throws ClientException {
+        Survey survey = createSurvey(superSpace, name, question, beginDate,
+                endDate, answers);
+        survey.getSurveyDocument().followTransition(PUBLISH_SURVEY_TRANSITION);
+        session.save();
+        return survey;
     }
 
     protected void changeUser(String username) {

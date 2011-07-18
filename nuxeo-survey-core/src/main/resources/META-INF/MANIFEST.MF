@@ -7,6 +7,8 @@ Bundle-Version: 1.0.0
 Nuxeo-Component: OSGI-INF/core-types-contrib.xml,
  OSGI-INF/adapter-contrib.xml,
  OSGI-INF/life-cycles-contrib.xml,
+ OSGI-INF/listeners-contrib.xml,
+ OSGI-INF/scheduler-contrib.xml,
  OSGI-INF/survey-service.xml,
  OSGI-INF/activity-stream-filters-contrib.xml,
  OSGI-INF/operations-contrib.xml

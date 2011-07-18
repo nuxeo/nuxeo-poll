@@ -34,6 +34,12 @@ public interface Survey {
 
     Date getEndDate();
 
-    DocumentModel getSurveyDocumentModel();
+    boolean isInProject();
+
+    boolean isPublished();
+
+    boolean isClosed();
+
+    DocumentModel getSurveyDocument();
 
 }

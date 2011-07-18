@@ -29,6 +29,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.survey.Survey;
+import org.nuxeo.ecm.survey.SurveyHelper;
 import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
 

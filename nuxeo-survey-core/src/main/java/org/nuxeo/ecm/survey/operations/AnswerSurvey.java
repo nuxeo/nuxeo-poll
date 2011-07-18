@@ -23,6 +23,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.survey.Survey;
+import org.nuxeo.ecm.survey.SurveyHelper;
 import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
 

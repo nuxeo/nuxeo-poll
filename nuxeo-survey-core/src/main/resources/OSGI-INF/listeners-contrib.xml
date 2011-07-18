@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="org.nuxeo.ecm.survey.listeners">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
+    point="listener">
+
+    <listener name="updateSurveyStatusListener" async="true"
+      postCommit="false" class="org.nuxeo.ecm.survey.listeners.UpdateSurveyStatusListener"
+      priority="1">
+      <event>updateSurveysStatus</event>
+    </listener>
+
+  </extension>
+
+</component>
