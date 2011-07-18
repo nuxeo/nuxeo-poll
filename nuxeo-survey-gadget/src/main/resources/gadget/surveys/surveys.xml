@@ -38,8 +38,7 @@
 
     function storeSurveys(response, params) {
       surveys = response.data.surveys;
-      console.log(response.data);
-      console.log(surveys);
+
       currentSurveyIndex = 0;
       if (surveys.length > 0) {
         displayCurrentSurvey();
@@ -54,8 +53,11 @@
 
     function displaySurvey(survey) {
       $('#surveyQuestion').empty();
+      $('#survey').empty();
       $('#surveyResult').empty();
+      $('.tools').empty();
 
+      $('#surveyQuestion').html(survey.question);
       if (survey.answered == true) {
         displaySurveyResultsHtml(survey);
       } else {
@@ -69,8 +71,7 @@
     }
 
     function displaySurveyQuestionHtml(survey) {
-      var surveyHtml = '<p class="question">' + survey.question + '</p>';
-      surveyHtml += '<div class="answers">';
+      var surveyHtml = '<div class="answers">';
       surveyHtml += '<ul>'
       for (var i = 0; i < survey.answers.length; i++) {
         surveyHtml += '<li>';
@@ -85,24 +86,83 @@
       surveyHtml += '</div>';
       surveyHtml += '<p><a class="answerButton" href="javascript:answerSurvey()">' + prefs.getMsg('command.answer.survey') + '</a></p>';
 
-      $('#surveyQuestion').html(surveyHtml);
+      $('#survey').html(surveyHtml);
     }
 
     function displaySurveyResultsHtml(survey) {
+      buildAndDisplayToolbar();
+      buildChart('pie', survey);
+    }
+
+    function buildAndDisplayToolbar() {
+      var toolbarHtml = '';
+      toolbarHtml += '<select name="chartType" id="chartType">';
+      toolbarHtml += '<option value="pie">' + prefs.getMsg('label.survey.chart.type.pie') + '</option>'
+      toolbarHtml += '<option value="bars">' + prefs.getMsg('label.survey.chart.type.bars') + '</option>'
+      toolbarHtml += '</select>';
+
+      $('.tools').html(toolbarHtml);
+
+      $("#chartType").change(function () {
+        var chartType = $('#chartType option:selected').val();
+        buildChart(chartType);
+      });
+
+      $('.tools').show();
+    }
+
+    function buildChart(chartType, survey) {
+      chartType = chartType || 'pie';
+      survey = survey || surveys[currentSurveyIndex];
+
       var data = [];
       var resultsByAnswer = survey.result.resultsByAnswer;
       for( var i = 0; i < resultsByAnswer.length; i++) {
         data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
       }
 
-      $.plot($("#surveyResult"), data,
-        {
-          series: {
-            pie: {
-              show: true
+      if (chartType == 'pie') {
+        var data = [];
+        var resultsByAnswer = survey.result.resultsByAnswer;
+        for( var i = 0; i < resultsByAnswer.length; i++) {
+          data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
+        }
+
+        $.plot($("#surveyResult"), data, {
+            series: {
+              pie: {
+                show: true
+              }
             }
+        });
+      } else if (chartType == 'bars') {
+
+        var data = [{label: "yo", data: [[0, 145]]}, {label:"tada", data:[[1, 1000]]}];
+
+        var data = [];
+        var resultsByAnswer = survey.result.resultsByAnswer;
+        for( var i = 0; i < resultsByAnswer.length; i++) {
+          data[i] = { label: survey.answers[i], data: [[i, resultsByAnswer[i].result]] };
+        }
+
+        $.plot($("#surveyResult"), data, {
+          legend: {
+            show: true,
+            margin: 10,
+            backgroundOpacity: 0.5
+          },
+          series: {
+            bars: { show: true }
+          },
+          xaxis: {
+            tickSize: 1,
+            tickFormatter: function (v) { return ""; }
+          },
+          yaxis: {
+            tickDecimals: 0
           }
         });
+      }
     }
 
     function createNavigationBar() {
@@ -142,8 +202,6 @@
     }
 
     function answerSurvey() {
-      console.log('answerSurvey');
-      console.log($('input[name=answers]:checked'));
       var answerIndex = $('input[name=answers]:checked').val();
       if (answerIndex >= 0) {
         var answerRequestParams = { operationId : 'Services.AnswerSurvey',
@@ -183,16 +241,19 @@
   </head>
   <body>
 
-   <div id="content">
-     <div id="surveyQuestion">
-     </div>
-     <div id="surveyResult" style="width: 250px; height: 250px;">
-     </div>
+    <div class="tools"></div>
 
-     <div class="navigationBar">
-     </div>
-     <#include "default-request-controls.ftl"/>
-   </div>
+    <div id="content">
+      <h4 id="surveyQuestion"></h4>
+      <div id="survey">
+      </div>
+      <div id="surveyResult" style="width: 250px; height: 250px;">
+      </div>
+
+      <div class="navigationBar">
+      </div>
+      <#include "default-request-controls.ftl"/>
+    </div>
 
   </body>
 </html>
