@@ -1,0 +1,46 @@
+<div xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  id="#{widget.id}">
+
+  <link rel="stylesheet" href="#{baseURL}css/opensocial/light-container-gadgets.css"></link>
+
+  <script type="text/javascript" language="javascript" src="#{baseURL}opensocial/gadgets/js/rpc.js?c=1"></script>
+  <script type="text/javascript" src="#{baseURL}js/?scripts=opensocial/cookies.js|opensocial/util.js|opensocial/gadgets.js|opensocial/cookiebaseduserprefstore.js|opensocial/jquery.opensocial.gadget.js"></script>
+
+  <h3 class="summaryTitle">
+    <c:if test="#{surveyActions.toSurvey(value).published}">
+      <h:outputText value="#{messages['label.survey.current.results']}" />
+    </c:if>
+    <c:if test="#{surveyActions.toSurvey(value).closed}">
+      <h:outputText value="#{messages['label.survey.results']}" />
+    </c:if>
+  </h3>
+
+  <div class="gadgets-gadget-chrome gadgets"></div>
+
+  <script type="text/javascript">
+    jQuery('.gadgets-gadget-chrome').openSocialGadget({
+      baseURL: '#{baseURL}',
+      language: '#{localeSelector.language}',
+      gadgetDefs: [
+        { specUrl: 'http://localhost:8080/nuxeo/site/gadgets/surveys/surveys.xml',
+          title: '#{messages['label.survey.result']}',
+          userPrefs: {
+            surveyId: {
+              value: '#{value.id}'
+            },
+            displayResult: {
+              value: true
+            }
+          },
+          displayTitleBar: false,
+          displayBorder: false,
+          width: '500px'
+        }
+      ]
+    });
+  </script>
+
+</div>

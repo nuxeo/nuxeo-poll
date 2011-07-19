@@ -88,6 +88,21 @@
       </properties>
     </widget>
 
+    <widget name="summary_survey_result" type="template">
+      <labels>
+        <label mode="any"></label>
+      </labels>
+      <translated>false</translated>
+      <properties widgetMode="any">
+        <property name="template">
+          /widgets/survey_result_widget_template.xhtml
+        </property>
+      </properties>
+      <widgetModes>
+        <mode value="view">#{surveyActions.toSurvey(currentDocument).inProject ? 'hidden' : 'view'}</mode>
+      </widgetModes>
+    </widget>
+
   </extension>
 
   <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
@@ -156,15 +171,16 @@
         <template mode="any">/layouts/layout_summary_template.xhtml</template>
       </templates>
       <rows>
-      <row>
-      </row>
+        <row>
+        </row>
         <row>
           <widget>summary_current_document_description</widget>
-          <widget>summary_current_document_view</widget>
+          <widget>summary_survey_result</widget>
         </row>
         <row>
           <widget>summary_publish_survey</widget>
           <widget>summary_current_document_actions</widget>
+          <widget>summary_current_document_view</widget>
           <widget>summary_current_document_tagging</widget>
         </row>
       </rows>
