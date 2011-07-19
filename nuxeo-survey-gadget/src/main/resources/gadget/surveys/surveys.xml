@@ -7,6 +7,8 @@
     <Require feature="dynamic-height" />
     <#include "default-oauth-prefs.ftl"/>
   </ModulePrefs>
+  <UserPref name="surveyId" datatype="hidden" default_value="" />
+  <UserPref name="displayResult" datatype="hidden" default_value="false" />
   <Content type="html">
 
 <![CDATA[
@@ -24,14 +26,6 @@
 
   <script>
     var prefs = new gadgets.Prefs();
-    // configure Automation REST call
-    var NXRequestParams= { operationId : 'Services.GetPublishedSurveys',
-      operationParams: {
-        onlyUnansweredSurveys: true
-      },
-      operationContext: {},
-      operationCallback: storeSurveys
-    };
 
     var surveys = [];
     var currentSurveyIndex = 0;
@@ -51,21 +45,29 @@
       displaySurvey(surveys[currentSurveyIndex]);
     }
 
-    function displaySurvey(survey) {
+    function displaySurvey(survey, forceResultDisplay, hideNavigationBar) {
+      if (typeof forceResultDisplay === 'undefined') {
+        forceResultDisplay = 'false';
+      }
+      if (typeof hideNavigationBar === 'undefined') {
+        hideNavigationBar = false;
+      }
       $('#surveyQuestion').empty();
       $('#survey').empty();
       $('#surveyResult').empty();
       $('.tools').empty();
 
       $('#surveyQuestion').html(survey.question);
-      if (survey.answered == true) {
+      if ((forceResultDisplay === 'true') || survey.answered) {
         displaySurveyResultsHtml(survey);
       } else {
         displaySurveyQuestionHtml(survey);
       }
 
-      // create the navigation bar
-      createNavigationBar();
+      if (hideNavigationBar != true) {
+        // create the navigation bar
+        createNavigationBar();
+      }
 
       gadgets.window.adjustHeight();
     }
@@ -155,10 +157,12 @@
             bars: { show: true }
           },
           xaxis: {
+            min: 0,
             tickSize: 1,
             tickFormatter: function (v) { return ""; }
           },
           yaxis: {
+            min: 0,
             tickDecimals: 0
           }
         });
@@ -230,10 +234,42 @@
     }
 
     gadgets.util.registerOnLoadHandler(function() {
-      loadSurveys();
+      var surveyId = prefs.getString("surveyId");
+      if (surveyId != "") {
+        loadOneSurvey(surveyId);
+      } else {
+        loadPublishedSurveys();
+      }
+
     });
 
-    function loadSurveys() {
+    function loadPublishedSurveys() {
+      var NXRequestParams= { operationId : 'Services.GetPublishedSurveys',
+        operationParams: {
+          onlyUnansweredSurveys: true
+        },
+        operationContext: {},
+        operationCallback: storeSurveys
+      };
+
+      doAutomationRequest(NXRequestParams);
+    }
+
+    function loadOneSurvey(surveyId) {
+      var NXRequestParams= { operationId : 'Services.GetSurvey',
+        operationParams: {
+          surveyId: surveyId,
+          withResult: true
+        },
+        operationContext: {},
+        operationCallback: function(response, params) {
+          var survey = response.data;
+          currentSurveyIndex = 0;
+          surveys = [survey];
+          displaySurvey(survey, prefs.getString("displayResult"), true);
+        }
+      };
+
       doAutomationRequest(NXRequestParams);
     }
 
