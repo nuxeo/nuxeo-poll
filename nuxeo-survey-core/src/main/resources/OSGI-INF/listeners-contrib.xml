@@ -5,7 +5,7 @@
     point="listener">
 
     <listener name="updateSurveyStatusListener" async="true"
-      postCommit="false" class="org.nuxeo.ecm.survey.listeners.UpdateSurveyStatusListener"
+      postCommit="false" class="org.nuxeo.ecm.survey.listeners.UpdateAllSurveysStatusListener"
       priority="1">
       <event>updateSurveysStatus</event>
     </listener>

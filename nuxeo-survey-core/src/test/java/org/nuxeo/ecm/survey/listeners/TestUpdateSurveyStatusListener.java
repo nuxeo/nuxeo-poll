@@ -4,7 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
-import static org.nuxeo.ecm.survey.listeners.UpdateSurveyStatusListener.UPDATE_SURVEYS_STATUS_EVENT;
+import static org.nuxeo.ecm.survey.listeners.UpdateAllSurveysStatusListener.UPDATE_SURVEYS_STATUS_EVENT;
 
 import org.joda.time.DateTime;
 import org.junit.Test;

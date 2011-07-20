@@ -31,14 +31,14 @@ import org.nuxeo.ecm.survey.SurveyService;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * Listener updating the status of a Survey.
- * <p/>
+ * Listener updating the status of all in project or published Surveys.
+ * <p>
  * {@code project} -> {@code published} -> {@code closed}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-public class UpdateSurveyStatusListener implements EventListener {
+public class UpdateAllSurveysStatusListener implements EventListener {
 
     public static final String UPDATE_SURVEYS_STATUS_EVENT = "updateSurveysStatus";
 
