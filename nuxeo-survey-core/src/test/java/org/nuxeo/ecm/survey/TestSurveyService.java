@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.nuxeo.ecm.survey.Constants.ANSWER_SURVEY_VERB;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
 
 import java.io.IOException;
 import java.util.List;
@@ -136,11 +138,11 @@ public class TestSurveyService extends AbstractSurveyTest {
                 "Yes", "No");
         assertNotNull(survey);
 
-        assertNull(survey.getBeginDate());
+        assertNotNull(survey.getBeginDate());
         assertNull(survey.getEndDate());
 
         survey = surveyService.closeSurvey(survey);
-        assertNull(survey.getBeginDate());
+        assertNotNull(survey.getBeginDate());
         assertNotNull(survey.getEndDate());
     }
 
@@ -253,11 +255,12 @@ public class TestSurveyService extends AbstractSurveyTest {
         DateTime twoDaysBefore = now.minusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1",
-                twoDaysBefore.toDate(), null, "Yes", "No");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1", "Yes", "No");
         assertNotNull(survey1);
         assertTrue(survey1.isInProject());
 
+        survey1.getSurveyDocument().setPropertyValue(
+                SURVEY_BEGIN_DATE_PROPERTY, twoDaysBefore.toDate());
         survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());
         assertTrue(survey1.isPublished());
 
@@ -270,12 +273,13 @@ public class TestSurveyService extends AbstractSurveyTest {
         DateTime twoDaysBefore = now.minusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Survey survey1 = createSurvey(ws, "survey1", "Question 1", null,
-                twoDaysBefore.toDate(), "Yes", "No");
+        Survey survey1 = createSurvey(ws, "survey1", "Question 1",
+                twoDaysBefore.toDate(), null, "Yes", "No");
         assertNotNull(survey1);
-        survey1 = surveyService.publishSurvey(survey1);
         assertTrue(survey1.isPublished());
 
+        survey1.getSurveyDocument().setPropertyValue(SURVEY_END_DATE_PROPERTY,
+                twoDaysBefore.toDate());
         survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());
         assertTrue(survey1.isClosed());
     }
@@ -289,6 +293,7 @@ public class TestSurveyService extends AbstractSurveyTest {
         Survey survey1 = createSurvey(ws, "survey1", "Question 1",
                 twoDaysAfter.toDate(), null, "Yes", "No");
         assertNotNull(survey1);
+
         assertTrue(survey1.isInProject());
 
         survey1 = surveyService.updateSurveyStatus(survey1, now.toDate());

@@ -4,7 +4,14 @@
   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent"
     point="listener">
 
-    <listener name="updateSurveyStatusListener" async="true"
+    <listener name="updateSurveyStatusListener" async="false"
+      postCommit="true" class="org.nuxeo.ecm.survey.listeners.UpdateSurveyStatusListener"
+      priority="50">
+      <event>documentCreated</event>
+      <event>documentModified</event>
+    </listener>
+
+    <listener name="updateAllSurveyStatusListener" async="true"
       postCommit="false" class="org.nuxeo.ecm.survey.listeners.UpdateAllSurveysStatusListener"
       priority="1">
       <event>updateSurveysStatus</event>

@@ -12,7 +12,6 @@
 
 package org.nuxeo.ecm.survey;
 
-import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_ANSWERS_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
@@ -25,6 +24,7 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.activity.ActivityStreamServiceImpl;
@@ -96,25 +96,19 @@ public abstract class AbstractSurveyTest {
         survey.setPropertyValue(SURVEY_BEGIN_DATE_PROPERTY, beginDate);
         survey.setPropertyValue(SURVEY_END_DATE_PROPERTY, endDate);
         survey = session.createDocument(survey);
-        session.save();
+        session.save(); // fire post commit event listener
+        session.save(); // flush the session to retrieve updated survey
+        survey = session.getDocument(survey.getRef());
         return toSurvey(survey);
     }
 
     protected Survey createPublishedSurvey(DocumentModel superSpace,
             String name, String question, String... answers)
             throws ClientException {
-        return createPublishedSurvey(superSpace, name, question, null, null,
-                answers);
-    }
-
-    protected Survey createPublishedSurvey(DocumentModel superSpace,
-            String name, String question, Date beginDate, Date endDate,
-            String... answers) throws ClientException {
-        Survey survey = createSurvey(superSpace, name, question, beginDate,
-                endDate, answers);
-        survey.getSurveyDocument().followTransition(PUBLISH_SURVEY_TRANSITION);
-        session.save();
-        return survey;
+        DateTime now = new DateTime();
+        DateTime twoDaysBefore = now.minusDays(2);
+        return createSurvey(superSpace, name, question, twoDaysBefore.toDate(),
+                null, answers);
     }
 
     protected void changeUser(String username) {

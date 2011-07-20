@@ -28,7 +28,8 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.platform.ui.web.api.WebActions;import org.nuxeo.ecm.webapp.contentbrowser.DocumentActions;
+import org.nuxeo.ecm.platform.ui.web.api.WebActions;
+import org.nuxeo.ecm.webapp.contentbrowser.DocumentActions;
 
 /**
  * Handles Survey related web actions.
@@ -118,7 +119,8 @@ public class SurveyActions implements Serializable {
         surveyService.closeSurvey(toSurvey(survey));
     }
 
-    public String backToSurveysListing(DocumentModel survey) throws ClientException {
+    public String backToSurveysListing(DocumentModel survey)
+            throws ClientException {
         DocumentModel superSpace = documentManager.getSuperSpace(survey);
         String view = navigationContext.navigateToDocument(superSpace);
         webActions.setCurrentTabIds(SURVEYS_TAB);
