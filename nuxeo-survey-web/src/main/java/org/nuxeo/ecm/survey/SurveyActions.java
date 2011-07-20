@@ -28,7 +28,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
-import org.nuxeo.ecm.webapp.contentbrowser.DocumentActions;
+import org.nuxeo.ecm.platform.ui.web.api.WebActions;import org.nuxeo.ecm.webapp.contentbrowser.DocumentActions;
 
 /**
  * Handles Survey related web actions.
@@ -43,6 +43,8 @@ public class SurveyActions implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final String SURVEYS_TAB = ":TAB_MANAGE:TAB_SURVEYS";
+
     protected static final Log log = LogFactory.getLog(SurveyActions.class);
 
     @In(create = true)
@@ -53,6 +55,9 @@ public class SurveyActions implements Serializable {
 
     @In(create = true)
     protected transient NavigationContext navigationContext;
+
+    @In(create = true)
+    protected transient WebActions webActions;
 
     @In(create = true)
     protected transient SurveyService surveyService;
@@ -111,6 +116,13 @@ public class SurveyActions implements Serializable {
 
     public void closeSurvey(DocumentModel survey) throws ClientException {
         surveyService.closeSurvey(toSurvey(survey));
+    }
+
+    public String backToSurveysListing(DocumentModel survey) throws ClientException {
+        DocumentModel superSpace = documentManager.getSuperSpace(survey);
+        String view = navigationContext.navigateToDocument(superSpace);
+        webActions.setCurrentTabIds(SURVEYS_TAB);
+        return view;
     }
 
 }

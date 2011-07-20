@@ -103,6 +103,18 @@
       </widgetModes>
     </widget>
 
+    <widget name="summary_back_to_surveys_listing" type="template">
+      <labels>
+        <label mode="any"></label>
+      </labels>
+      <translated>false</translated>
+      <properties widgetMode="any">
+        <property name="template">
+          /widgets/back_to_surveys_listing_widget_template.xhtml
+        </property>
+      </properties>
+    </widget>
+
   </extension>
 
   <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager"
@@ -178,6 +190,7 @@
           <widget>summary_survey_result</widget>
         </row>
         <row>
+          <widget>summary_back_to_surveys_listing</widget>
           <widget>summary_publish_survey</widget>
           <widget>summary_current_document_actions</widget>
           <widget>summary_current_document_view</widget>
