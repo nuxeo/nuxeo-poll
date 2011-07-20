@@ -11,7 +11,7 @@
 
   <h3 class="summaryTitle">
     <c:if test="#{surveyActions.toSurvey(value).published}">
-      <h:outputText value="#{messages['label.survey.current.results']}" />
+      <h:outputText value="#{messages['label.survey.temporary.results']}" />
     </c:if>
     <c:if test="#{surveyActions.toSurvey(value).closed}">
       <h:outputText value="#{messages['label.survey.results']}" />
