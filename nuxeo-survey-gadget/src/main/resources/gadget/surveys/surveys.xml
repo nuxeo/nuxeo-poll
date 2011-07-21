@@ -86,7 +86,7 @@
       }
       surveyHtml += '</ul>';
       surveyHtml += '</div>';
-      surveyHtml += '<p><a class="answerButton" href="javascript:answerSurvey()">' + prefs.getMsg('command.answer.survey') + '</a></p>';
+      surveyHtml += '<p><a class="answerButton" href="javascript:answerSurvey()">' + prefs.getMsg('command.cast.vote') + '</a></p>';
 
       $('#survey').html(surveyHtml);
     }
