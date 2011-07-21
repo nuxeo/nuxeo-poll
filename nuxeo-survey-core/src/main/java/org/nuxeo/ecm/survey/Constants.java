@@ -35,18 +35,18 @@ public class Constants {
 
     public static final String SURVEY_ANSWERS_PROPERTY = "survey:answers";
 
-    public static final String SURVEY_BEGIN_DATE_PROPERTY = "survey:begin_date";
+    public static final String SURVEY_START_DATE_PROPERTY = "survey:start_date";
 
     public static final String SURVEY_END_DATE_PROPERTY = "dc:expired";
 
     // Life cycle
     public static final String SURVEY_PROJECT_STATE = "project";
 
-    public static final String SURVEY_PUBLISHED_STATE = "published";
+    public static final String SURVEY_OPEN_STATE = "open";
 
     public static final String SURVEY_CLOSED_STATE = "closed";
 
-    public static final String PUBLISH_SURVEY_TRANSITION = "publish";
+    public static final String OPEN_SURVEY_TRANSITION = "open";
 
     public static final String CLOSE_SURVEY_TRANSITION = "close";
 

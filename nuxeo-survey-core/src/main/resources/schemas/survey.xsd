@@ -8,6 +8,6 @@
   </xs:simpleType>
 
   <xs:element name="answers" type="nxs:stringArrayType" />
-  <xs:element name="begin_date" type="xs:date" />
+  <xs:element name="start_date" type="xs:date" />
 
 </xs:schema>

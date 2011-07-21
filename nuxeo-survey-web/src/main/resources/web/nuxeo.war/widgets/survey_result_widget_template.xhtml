@@ -10,7 +10,7 @@
   <script type="text/javascript" src="#{baseURL}js/?scripts=opensocial/cookies.js|opensocial/util.js|opensocial/gadgets.js|opensocial/cookiebaseduserprefstore.js|opensocial/jquery.opensocial.gadget.js"></script>
 
   <h3 class="summaryTitle">
-    <c:if test="#{surveyActions.toSurvey(value).published}">
+    <c:if test="#{surveyActions.toSurvey(value).open}">
       <h:outputText value="#{messages['label.survey.temporary.results']}" />
     </c:if>
     <c:if test="#{surveyActions.toSurvey(value).closed}">

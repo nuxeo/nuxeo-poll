@@ -19,11 +19,11 @@ package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.ANSWER_SURVEY_VERB;
 import static org.nuxeo.ecm.survey.Constants.CLOSE_SURVEY_TRANSITION;
-import static org.nuxeo.ecm.survey.Constants.PUBLISH_SURVEY_TRANSITION;
-import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.OPEN_SURVEY_TRANSITION;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
-import static org.nuxeo.ecm.survey.Constants.SURVEY_PUBLISHED_STATE;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_OPEN_STATE;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_START_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.ACTOR_PARAMETER;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.QUERY_TYPE_PARAMETER;
 import static org.nuxeo.ecm.survey.SurveyActivityStreamFilter.QueryType.ACTOR_ANSWERS_FOR_SURVEY;
@@ -103,13 +103,13 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public List<Survey> getPublishedSurveys(CoreSession session) {
+    public List<Survey> getOpenSurveys(CoreSession session) {
         try {
             String query = "SELECT * FROM Document WHERE ecm:primaryType = '%s'"
                     + " AND ecm:currentLifeCycleState = '%s' ORDER BY %s";
             List<DocumentModel> docs = session.query(String.format(query,
-                    SURVEY_DOCUMENT_TYPE, SURVEY_PUBLISHED_STATE,
-                    SURVEY_BEGIN_DATE_PROPERTY));
+                    SURVEY_DOCUMENT_TYPE, SURVEY_OPEN_STATE,
+                    SURVEY_START_DATE_PROPERTY));
 
             List<Survey> surveys = new ArrayList<Survey>();
             for (DocumentModel doc : docs) {
@@ -193,12 +193,12 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public Survey publishSurvey(Survey survey) {
+    public Survey openSurvey(Survey survey) {
         try {
             DocumentModel surveyDocument = survey.getSurveyDocument();
             CoreSession session = surveyDocument.getCoreSession();
-            surveyDocument.followTransition(PUBLISH_SURVEY_TRANSITION);
-            surveyDocument.setPropertyValue(SURVEY_BEGIN_DATE_PROPERTY,
+            surveyDocument.followTransition(OPEN_SURVEY_TRANSITION);
+            surveyDocument.setPropertyValue(SURVEY_START_DATE_PROPERTY,
                     new Date());
             surveyDocument = session.saveDocument(surveyDocument);
             session.save();
@@ -226,13 +226,13 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public Survey updateSurveyStatus(Survey survey, Date date) {
-        Date beginDate = survey.getBeginDate();
+        Date startDate = survey.getStartDate();
         Date endDate = survey.getEndDate();
         if (survey.isInProject()) {
-            if (beginDate != null && date.after(beginDate)) {
-                survey = publishSurvey(survey);
+            if (startDate != null && date.after(startDate)) {
+                survey = openSurvey(survey);
             }
-        } else if (survey.isPublished()) {
+        } else if (survey.isOpen()) {
             if (endDate != null && date.after(endDate)) {
                 survey = closeSurvey(survey);
             }

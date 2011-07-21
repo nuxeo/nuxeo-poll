@@ -9,13 +9,13 @@
   <div>
     <c:if test="#{surveyActions.toSurvey(value).inProject}">
       <h:outputText styleClass="status project" value="#{messages[currentDocument.currentLifeCycleState]}" />
-      <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.publish']}"
-        action="#{surveyActions.publishSurvey(value)}"
+      <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.open']}"
+        action="#{surveyActions.openSurvey(value)}"
         immediate="true" />
     </c:if>
 
-    <c:if test="#{surveyActions.toSurvey(value).published}">
-      <h:outputText styleClass="status published" value="#{messages[currentDocument.currentLifeCycleState]}" />
+    <c:if test="#{surveyActions.toSurvey(value).open}">
+      <h:outputText styleClass="status open" value="#{messages[currentDocument.currentLifeCycleState]}" />
       <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.close']}"
         action="#{surveyActions.closeSurvey(value)}"
         immediate="true" />

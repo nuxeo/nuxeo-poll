@@ -41,9 +41,9 @@ public interface SurveyService {
     DocumentModel getSurveysContainer(DocumentModel doc);
 
     /**
-     * Returns all published surveys available with the given {@code session}.
+     * Returns all open surveys available with the given {@code session}.
      */
-    List<Survey> getPublishedSurveys(CoreSession session);
+    List<Survey> getOpenSurveys(CoreSession session);
 
     /**
      * Returns {@code true} if the user with the given {@code username} has
@@ -63,14 +63,14 @@ public interface SurveyService {
     SurveyResult getResultFor(Survey survey);
 
     /**
-     * Publish the {@code survey}. The survey will be available through the
-     * {@link #getPublishedSurveys} method.
+     * Open the {@code survey}. The survey will be available through the
+     * {@link #getOpenSurveys} method.
      * <p>
-     * The begin date of the survey is set to now.
+     * The start date of the survey is set to now.
      *
      * @return the updated Survey
      */
-    Survey publishSurvey(Survey survey);
+    Survey openSurvey(Survey survey);
 
     /**
      * Close the {@code survey}.
@@ -85,7 +85,7 @@ public interface SurveyService {
      * Update the status of the {@code survey} according to the given
      * {@code date}.
      * <p>
-     * The survey can be published or closed according to its begin date and end
+     * The survey can be open or closed according to its start date and end
      * date.
      */
     Survey updateSurveyStatus(Survey survey, Date date);

@@ -10,7 +10,7 @@
     <operation
       class="org.nuxeo.ecm.survey.operations.GetSurvey" />
     <operation
-      class="org.nuxeo.ecm.survey.operations.GetPublishedSurveys" />
+      class="org.nuxeo.ecm.survey.operations.GetOpenSurveys" />
     <operation
       class="org.nuxeo.ecm.survey.operations.AnswerSurvey" />
 

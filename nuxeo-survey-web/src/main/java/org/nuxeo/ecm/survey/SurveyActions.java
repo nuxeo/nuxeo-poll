@@ -111,8 +111,8 @@ public class SurveyActions implements Serializable {
         return SurveyHelper.toSurvey(survey);
     }
 
-    public void publishSurvey(DocumentModel survey) throws ClientException {
-        surveyService.publishSurvey(toSurvey(survey));
+    public void openSurvey(DocumentModel survey) throws ClientException {
+        surveyService.openSurvey(toSurvey(survey));
     }
 
     public void closeSurvey(DocumentModel survey) throws ClientException {

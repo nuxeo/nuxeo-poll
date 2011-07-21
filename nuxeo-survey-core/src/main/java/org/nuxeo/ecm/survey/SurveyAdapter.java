@@ -18,12 +18,12 @@
 package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.SURVEY_ANSWERS_PROPERTY;
-import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_CLOSED_STATE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_OPEN_STATE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_PROJECT_STATE;
-import static org.nuxeo.ecm.survey.Constants.SURVEY_PUBLISHED_STATE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_QUESTION_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_START_DATE_PROPERTY;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -63,8 +63,8 @@ public class SurveyAdapter implements Survey {
     }
 
     @Override
-    public Date getBeginDate() {
-        Calendar cal = (Calendar) getPropertyValue(SURVEY_BEGIN_DATE_PROPERTY);
+    public Date getStartDate() {
+        Calendar cal = (Calendar) getPropertyValue(SURVEY_START_DATE_PROPERTY);
         return cal == null ? null : cal.getTime();
     }
 
@@ -89,8 +89,8 @@ public class SurveyAdapter implements Survey {
     }
 
     @Override
-    public boolean isPublished() {
-        return safeLifeCycleStateCheck(SURVEY_PUBLISHED_STATE);
+    public boolean isOpen() {
+        return safeLifeCycleStateCheck(SURVEY_OPEN_STATE);
     }
 
     @Override

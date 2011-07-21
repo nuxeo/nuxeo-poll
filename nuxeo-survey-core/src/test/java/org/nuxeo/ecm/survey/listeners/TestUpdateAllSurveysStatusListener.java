@@ -54,16 +54,16 @@ public class TestUpdateAllSurveysStatusListener extends AbstractSurveyTest {
     }
 
     @Test
-    public void shouldUpdateStatusToPublishedThroughListener() throws Exception {
+    public void shouldUpdateStatusToOpenThroughListener() throws Exception {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
         DateTime twoDaysAfter = now.plusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Survey surveyToBePublished = createSurvey(ws, "surveyToBePublished",
+        Survey surveyToBeOpen = createSurvey(ws, "surveyToBeOpen",
                 "Question 1", twoDaysBefore.toDate(), null, "Yes", "No");
-        assertNotNull(surveyToBePublished);
-        assertTrue(surveyToBePublished.isInProject());
+        assertNotNull(surveyToBeOpen);
+        assertTrue(surveyToBeOpen.isInProject());
 
         Survey surveyToStayInProject = createSurvey(ws,
                 "surveyToStayInProject", "Question 2", twoDaysAfter.toDate(),
@@ -78,13 +78,13 @@ public class TestUpdateAllSurveysStatusListener extends AbstractSurveyTest {
         session.save();
         eventService.waitForAsyncCompletion();
 
-        DocumentModel surveyToBePublishedDoc = session.getDocument(surveyToBePublished.getSurveyDocument().getRef());
-        surveyToBePublished = toSurvey(surveyToBePublishedDoc);
-        assertTrue(surveyToBePublished.isPublished());
+        DocumentModel surveyToBeOpenDoc = session.getDocument(surveyToBeOpen.getSurveyDocument().getRef());
+        surveyToBeOpen = toSurvey(surveyToBeOpenDoc);
+        assertTrue(surveyToBeOpen.isOpen());
 
         DocumentModel surveyToStayInProjectDoc = session.getDocument(surveyToStayInProject.getSurveyDocument().getRef());
         surveyToStayInProject = toSurvey(surveyToStayInProjectDoc);
-        assertFalse(surveyToStayInProject.isPublished());
+        assertFalse(surveyToStayInProject.isOpen());
         assertTrue(surveyToStayInProject.isInProject());
     }
 
@@ -101,15 +101,15 @@ public class TestUpdateAllSurveysStatusListener extends AbstractSurveyTest {
         surveyToBeClosed = surveyService.updateSurveyStatus(surveyToBeClosed,
                 new Date());
         assertNotNull(surveyToBeClosed);
-        assertTrue(surveyToBeClosed.isPublished());
+        assertTrue(surveyToBeClosed.isOpen());
 
-        Survey surveyToStayPublished = createSurvey(ws,
-                "surveyToStayPublished", "Question 1", twoDaysBefore.toDate(),
-                twoDaysAfter.toDate(), "Yes", "No");
-        surveyToStayPublished = surveyService.updateSurveyStatus(
-                surveyToStayPublished, new Date());
-        assertNotNull(surveyToStayPublished);
-        assertTrue(surveyToStayPublished.isPublished());
+        Survey surveyToStayOpen = createSurvey(ws, "surveyToStayOpen",
+                "Question 1", twoDaysBefore.toDate(), twoDaysAfter.toDate(),
+                "Yes", "No");
+        surveyToStayOpen = surveyService.updateSurveyStatus(surveyToStayOpen,
+                new Date());
+        assertNotNull(surveyToStayOpen);
+        assertTrue(surveyToStayOpen.isOpen());
 
         Survey surveyToStayInProject = createSurvey(ws,
                 "surveyToStayInProject", "Question 1", twoDaysAfter.toDate(),
@@ -127,19 +127,19 @@ public class TestUpdateAllSurveysStatusListener extends AbstractSurveyTest {
         DocumentModel surveyToBeClosedDoc = session.getDocument(surveyToBeClosed.getSurveyDocument().getRef());
         surveyToBeClosed = toSurvey(surveyToBeClosedDoc);
         assertTrue(surveyToBeClosed.isClosed());
-        assertFalse(surveyToBeClosed.isPublished());
+        assertFalse(surveyToBeClosed.isOpen());
         assertFalse(surveyToBeClosed.isInProject());
 
-        DocumentModel surveyToStayPublishedDoc = session.getDocument(surveyToStayPublished.getSurveyDocument().getRef());
-        surveyToStayPublished = toSurvey(surveyToStayPublishedDoc);
-        assertTrue(surveyToStayPublished.isPublished());
-        assertFalse(surveyToStayPublished.isInProject());
-        assertFalse(surveyToStayPublished.isClosed());
+        DocumentModel surveyToStayOpenDoc = session.getDocument(surveyToStayOpen.getSurveyDocument().getRef());
+        surveyToStayOpen = toSurvey(surveyToStayOpenDoc);
+        assertTrue(surveyToStayOpen.isOpen());
+        assertFalse(surveyToStayOpen.isInProject());
+        assertFalse(surveyToStayOpen.isClosed());
 
         DocumentModel surveyToStayInProjectDoc = session.getDocument(surveyToStayInProject.getSurveyDocument().getRef());
         surveyToStayInProject = toSurvey(surveyToStayInProjectDoc);
         assertTrue(surveyToStayInProject.isInProject());
-        assertFalse(surveyToStayInProject.isPublished());
+        assertFalse(surveyToStayInProject.isOpen());
         assertFalse(surveyToStayInProject.isClosed());
     }
 

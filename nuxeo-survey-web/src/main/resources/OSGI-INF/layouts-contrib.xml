@@ -44,13 +44,13 @@
       </subWidgets>
     </widget>
 
-    <widget name="begin_date" type="datetime">
+    <widget name="start_date" type="datetime">
       <labels>
-        <label mode="any">label.survey.beginDate</label>
+        <label mode="any">label.survey.startDate</label>
       </labels>
       <translated>true</translated>
       <fields>
-        <field>survey:begin_date</field>
+        <field>survey:start_date</field>
       </fields>
       <properties widgetMode="any">
         <property name="pattern">#{nxu:basicDateFormater()}</property>
@@ -76,14 +76,14 @@
       </properties>
     </widget>
 
-    <widget name="summary_publish_survey" type="template">
+    <widget name="summary_open_survey" type="template">
       <labels>
         <label mode="any"></label>
       </labels>
       <translated>false</translated>
       <properties widgetMode="any">
         <property name="template">
-          /widgets/publish_survey_widget_template.xhtml
+          /widgets/open_survey_widget_template.xhtml
         </property>
       </properties>
     </widget>
@@ -143,7 +143,7 @@
           <widget>survey_answers</widget>
         </row>
         <row>
-          <widget>begin_date</widget>
+          <widget>start_date</widget>
         </row>
         <row>
           <widget>end_date</widget>
@@ -191,7 +191,7 @@
         </row>
         <row>
           <widget>summary_back_to_surveys_listing</widget>
-          <widget>summary_publish_survey</widget>
+          <widget>summary_open_survey</widget>
           <widget>summary_current_document_actions</widget>
           <widget>summary_current_document_view</widget>
           <widget>summary_current_document_tagging</widget>

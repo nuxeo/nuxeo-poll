@@ -6,11 +6,11 @@
 
     <lifecycle name="surveyLifeCycle" defaultInitial="project">
       <transitions>
-        <transition name="publish" destinationState="published">
-          <description>Publish the survey</description>
+        <transition name="open" destinationState="open">
+          <description>Open the survey</description>
         </transition>
         <transition name="close" destinationState="closed">
-          <description>Close the published survey</description>
+          <description>Close the open survey</description>
         </transition>
         <transition name="delete" destinationState="deleted">
           <description>Move the survey to trash (temporary delete)</description>
@@ -23,10 +23,10 @@
         <state name="project" description="Default state" initial="true">
           <transitions>
             <transition>delete</transition>
-            <transition>publish</transition>
+            <transition>open</transition>
           </transitions>
         </state>
-        <state name="published" description="Survey is published">
+        <state name="open" description="Survey is open">
           <transitions>
             <transition>close</transition>
           </transitions>

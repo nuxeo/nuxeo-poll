@@ -201,7 +201,7 @@
     }
 
     function displayNoSurvey() {
-      var htmlContent = '<p class="noSurveyLabel">' + prefs.getMsg('label.no.survey.published') + '</p>';
+      var htmlContent = '<p class="noSurveyLabel">' + prefs.getMsg('label.no.open.survey') + '</p>';
       $('#surveyQuestion').html(htmlContent);
     }
 
@@ -238,13 +238,13 @@
       if (surveyId != "") {
         loadOneSurvey(surveyId);
       } else {
-        loadPublishedSurveys();
+        loadOpenSurveys();
       }
 
     });
 
-    function loadPublishedSurveys() {
-      var NXRequestParams= { operationId : 'Services.GetPublishedSurveys',
+    function loadOpenSurveys() {
+      var NXRequestParams= { operationId : 'Services.GetOpenSurveys',
         operationParams: {
           onlyUnansweredSurveys: true
         },

@@ -13,10 +13,10 @@
 package org.nuxeo.ecm.survey;
 
 import static org.nuxeo.ecm.survey.Constants.SURVEY_ANSWERS_PROPERTY;
-import static org.nuxeo.ecm.survey.Constants.SURVEY_BEGIN_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_DOCUMENT_TYPE;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_END_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.Constants.SURVEY_QUESTION_PROPERTY;
+import static org.nuxeo.ecm.survey.Constants.SURVEY_START_DATE_PROPERTY;
 import static org.nuxeo.ecm.survey.SurveyHelper.toSurvey;
 
 import java.util.Date;
@@ -86,14 +86,14 @@ public abstract class AbstractSurveyTest {
     }
 
     protected Survey createSurvey(DocumentModel superSpace, String name,
-            String question, Date beginDate, Date endDate, String... answers)
+            String question, Date startDate, Date endDate, String... answers)
             throws ClientException {
         DocumentModel survey = session.createDocumentModel(
                 surveyService.getSurveysContainer(superSpace).getPathAsString(),
                 name, SURVEY_DOCUMENT_TYPE);
         survey.setPropertyValue(SURVEY_QUESTION_PROPERTY, question);
         survey.setPropertyValue(SURVEY_ANSWERS_PROPERTY, answers);
-        survey.setPropertyValue(SURVEY_BEGIN_DATE_PROPERTY, beginDate);
+        survey.setPropertyValue(SURVEY_START_DATE_PROPERTY, startDate);
         survey.setPropertyValue(SURVEY_END_DATE_PROPERTY, endDate);
         survey = session.createDocument(survey);
         session.save(); // fire post commit event listener
@@ -102,9 +102,8 @@ public abstract class AbstractSurveyTest {
         return toSurvey(survey);
     }
 
-    protected Survey createPublishedSurvey(DocumentModel superSpace,
-            String name, String question, String... answers)
-            throws ClientException {
+    protected Survey createOpenSurvey(DocumentModel superSpace, String name,
+            String question, String... answers) throws ClientException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
         return createSurvey(superSpace, name, question, twoDaysBefore.toDate(),

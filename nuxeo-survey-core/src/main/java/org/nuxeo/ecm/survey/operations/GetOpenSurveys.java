@@ -41,18 +41,18 @@ import org.nuxeo.ecm.survey.SurveyResult;
 import org.nuxeo.ecm.survey.SurveyService;
 
 /**
- * Operation to get all the published surveys, or just the unanswered ones.
+ * Operation to get all the open surveys, or just the unanswered open surveys.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-@Operation(id = GetPublishedSurveys.ID, category = Constants.CAT_SERVICES, label = "Get published surveys", description = "Get published surveys."
-        + "Default is to get all published surveys."
+@Operation(id = GetOpenSurveys.ID, category = Constants.CAT_SERVICES, label = "Get open surveys", description = "Get open surveys."
+        + "Default is to get all open surveys."
         + "The 'onlyUnansweredSurveys' parameter can "
         + "be used to retrieve only the unanswered surveys.")
-public class GetPublishedSurveys {
+public class GetOpenSurveys {
 
-    public static final String ID = "Services.GetPublishedSurveys";
+    public static final String ID = "Services.GetOpenSurveys";
 
     @Context
     protected CoreSession session;
@@ -66,7 +66,7 @@ public class GetPublishedSurveys {
     @OperationMethod
     public Blob run() throws ClientException, IOException {
         JSONArray array = new JSONArray();
-        List<Survey> availableSurveys = surveyService.getPublishedSurveys(session);
+        List<Survey> availableSurveys = surveyService.getOpenSurveys(session);
         for (Survey survey : availableSurveys) {
             writeSurvey(array, survey);
         }

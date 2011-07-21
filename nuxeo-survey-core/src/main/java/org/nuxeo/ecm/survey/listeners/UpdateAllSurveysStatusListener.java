@@ -36,9 +36,9 @@ import org.nuxeo.ecm.survey.SurveyService;
 import org.nuxeo.runtime.api.Framework;
 
 /**
- * Listener updating the status of all in project or published Surveys.
+ * Listener updating the status of all in project or open Surveys.
  * <p>
- * {@code project} -> {@code published} -> {@code closed}.
+ * {@code project} -> {@code open} -> {@code closed}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3

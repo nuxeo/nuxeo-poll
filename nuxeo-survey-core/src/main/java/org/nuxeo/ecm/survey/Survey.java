@@ -35,13 +35,13 @@ public interface Survey {
 
     String[] getAnswers();
 
-    Date getBeginDate();
+    Date getStartDate();
 
     Date getEndDate();
 
     boolean isInProject();
 
-    boolean isPublished();
+    boolean isOpen();
 
     boolean isClosed();
 
