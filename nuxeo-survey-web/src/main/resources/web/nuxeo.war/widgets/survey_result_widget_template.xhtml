@@ -4,11 +4,6 @@
   xmlns:c="http://java.sun.com/jstl/core"
   id="#{widget.id}">
 
-  <link rel="stylesheet" href="#{baseURL}css/opensocial/light-container-gadgets.css"></link>
-
-  <script type="text/javascript" language="javascript" src="#{baseURL}opensocial/gadgets/js/rpc.js?c=1"></script>
-  <script type="text/javascript" src="#{baseURL}js/?scripts=opensocial/cookies.js|opensocial/util.js|opensocial/gadgets.js|opensocial/cookiebaseduserprefstore.js|opensocial/jquery.opensocial.gadget.js"></script>
-
   <h3 class="summaryTitle">
     <c:if test="#{surveyActions.toSurvey(value).open}">
       <h:outputText value="#{messages['label.survey.temporary.results']}" />
@@ -18,10 +13,10 @@
     </c:if>
   </h3>
 
-  <div class="gadgets-gadget-chrome gadgets"></div>
+  <div class="gadgets-gadget-chrome gadgets gadget-survey-result"></div>
 
   <script type="text/javascript">
-    jQuery('.gadgets-gadget-chrome').openSocialGadget({
+    jQuery('.gadget-survey-result').openSocialGadget({
       baseURL: '#{baseURL}',
       language: '#{localeSelector.language}',
       gadgetDefs: [
