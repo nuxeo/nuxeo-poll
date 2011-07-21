@@ -10,7 +10,7 @@
 
     <action id="TAB_SURVEYS" link="/incl/tabs/surveys_listing.xhtml" order="150"
       label="action.view.surveys" icon="/icons/file.gif">
-      <category>TAB_MANAGE_sub_tab</category>
+      <category>VIEW_ACTION_LIST</category>
       <filter-id>display_surveys_tab</filter-id>
       <filter-id>manage</filter-id>
     </action>
