@@ -2,7 +2,7 @@
 <Module>
   <ModulePrefs title="Nuxeo Surveys"
     description=""
-    author="troger" author_email="troger@nuxeo.com">
+    author="troger" author_email="troger@nuxeo.com" height="280">
     <Require feature="jquery" />
     <#include "dynamic-translations.ftl"/>
     <Require feature="dynamic-height" />
@@ -55,7 +55,9 @@
       jQuery('#surveyQuestion').empty();
       jQuery('#survey').empty();
       jQuery('#surveyResult').empty();
+      jQuery('#surveyResult').hide();
       jQuery('.tools').empty();
+      jQuery('.tools').hide();
 
       jQuery('#surveyQuestion').html(survey.question);
       if ((forceResultDisplay === 'true') || survey.answered) {
@@ -94,6 +96,7 @@
     function displaySurveyResultsHtml(survey) {
       buildAndDisplayToolbar();
       buildChart('pie', survey);
+      jQuery('#surveyResult').show();
     }
 
     function buildAndDisplayToolbar() {
@@ -104,6 +107,7 @@
       toolbarHtml += '</select>';
 
       jQuery('.tools').html(toolbarHtml);
+      jQuery('.tools').show();
 
       jQuery("#chartType").change(function () {
         var chartType = jQuery('#chartType option:selected').val();
@@ -277,18 +281,20 @@
   </head>
   <body>
 
+    <#include "default-request-controls.ftl"/>
+
     <div class="tools"></div>
 
     <div id="content">
+
       <h4 id="surveyQuestion"></h4>
       <div id="survey">
       </div>
-      <div id="surveyResult" style="width: 250px; height: 250px;">
+      <div id="surveyResult" style="width: 180px; height: 150px;">
       </div>
 
       <div class="navigationBar">
       </div>
-      <#include "default-request-controls.ftl"/>
     </div>
 
   </body>
