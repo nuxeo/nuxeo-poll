@@ -3,6 +3,7 @@
   <ModulePrefs title="Nuxeo Surveys"
     description=""
     author="troger" author_email="troger@nuxeo.com">
+    <Require feature="jquery" />
     <#include "dynamic-translations.ftl"/>
     <Require feature="dynamic-height" />
     <#include "default-oauth-prefs.ftl"/>
@@ -20,9 +21,8 @@
   ${jsContext}
 
   <script src="${specDirectoryUrl}default-automation-request.js"></script>
-  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/jquery.js"></script>
-  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/flot/jquery.flot.min.js"></script>
-  <script src="${clientSideBaseUrl}site/skin/base/script/jquery/flot/jquery.flot.pie.min.js"></script>
+  <script src="${clientSideBaseUrl}scripts/jquery/flot/jquery.flot.min.js"></script>
+  <script src="${clientSideBaseUrl}scripts/jquery/flot/jquery.flot.pie.min.js"></script>
 
   <script>
     var prefs = new gadgets.Prefs();
@@ -52,12 +52,12 @@
       if (typeof hideNavigationBar === 'undefined') {
         hideNavigationBar = false;
       }
-      $('#surveyQuestion').empty();
-      $('#survey').empty();
-      $('#surveyResult').empty();
-      $('.tools').empty();
+      jQuery('#surveyQuestion').empty();
+      jQuery('#survey').empty();
+      jQuery('#surveyResult').empty();
+      jQuery('.tools').empty();
 
-      $('#surveyQuestion').html(survey.question);
+      jQuery('#surveyQuestion').html(survey.question);
       if ((forceResultDisplay === 'true') || survey.answered) {
         displaySurveyResultsHtml(survey);
       } else {
@@ -88,7 +88,7 @@
       surveyHtml += '</div>';
       surveyHtml += '<p><a class="answerButton" href="javascript:answerSurvey()">' + prefs.getMsg('command.cast.vote') + '</a></p>';
 
-      $('#survey').html(surveyHtml);
+      jQuery('#survey').html(surveyHtml);
     }
 
     function displaySurveyResultsHtml(survey) {
@@ -103,14 +103,14 @@
       toolbarHtml += '<option value="bars">' + prefs.getMsg('label.survey.chart.type.bars') + '</option>'
       toolbarHtml += '</select>';
 
-      $('.tools').html(toolbarHtml);
+      jQuery('.tools').html(toolbarHtml);
 
-      $("#chartType").change(function () {
-        var chartType = $('#chartType option:selected').val();
+      jQuery("#chartType").change(function () {
+        var chartType = jQuery('#chartType option:selected').val();
         buildChart(chartType);
       });
 
-      $('.tools').show();
+      jQuery('.tools').show();
     }
 
     function buildChart(chartType, survey) {
@@ -130,7 +130,7 @@
           data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
         }
 
-        $.plot($("#surveyResult"), data, {
+        jQuery.plot(jQuery("#surveyResult"), data, {
             series: {
               pie: {
                 show: true
@@ -147,7 +147,7 @@
           data[i] = { label: survey.answers[i], data: [[i, resultsByAnswer[i].result]] };
         }
 
-        $.plot($("#surveyResult"), data, {
+        jQuery.plot(jQuery("#surveyResult"), data, {
           legend: {
             show: true,
             margin: 10,
@@ -187,7 +187,7 @@
         htmlContent += '<span class="nextButton">' + prefs.getMsg('command.next.survey') + '</span>';
       }
 
-      $('.navigationBar').html(htmlContent);
+      jQuery('.navigationBar').html(htmlContent);
     }
 
     function previousSurvey() {
@@ -202,11 +202,11 @@
 
     function displayNoSurvey() {
       var htmlContent = '<p class="noSurveyLabel">' + prefs.getMsg('label.no.open.survey') + '</p>';
-      $('#surveyQuestion').html(htmlContent);
+      jQuery('#surveyQuestion').html(htmlContent);
     }
 
     function answerSurvey() {
-      var answerIndex = $('input[name=answers]:checked').val();
+      var answerIndex = jQuery('input[name=answers]:checked').val();
       if (answerIndex >= 0) {
         var answerRequestParams = { operationId : 'Services.AnswerSurvey',
           operationParams: {
