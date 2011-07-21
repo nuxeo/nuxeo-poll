@@ -44,7 +44,7 @@ public class SurveyActions implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String SURVEYS_TAB = ":TAB_MANAGE:TAB_SURVEYS";
+    public static final String SURVEYS_TAB = ":TAB_SURVEYS";
 
     protected static final Log log = LogFactory.getLog(SurveyActions.class);
 
