@@ -3,7 +3,6 @@
   <ModulePrefs title="Nuxeo Surveys"
     description=""
     author="troger" author_email="troger@nuxeo.com" height="280">
-    <Require feature="jquery" />
     <#include "dynamic-translations.ftl"/>
     <Require feature="dynamic-height" />
     <#include "default-oauth-prefs.ftl"/>
@@ -21,6 +20,7 @@
   ${jsContext}
 
   <script src="${specDirectoryUrl}default-automation-request.js"></script>
+  <script src="${clientSideBaseUrl}nxthemes-lib/jquery.js"></script>
   <script src="${clientSideBaseUrl}scripts/jquery/flot/jquery.flot.min.js"></script>
   <script src="${clientSideBaseUrl}scripts/jquery/flot/jquery.flot.pie.min.js"></script>
 
