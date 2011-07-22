@@ -52,12 +52,16 @@
       if (typeof hideNavigationBar === 'undefined') {
         hideNavigationBar = false;
       }
+      jQuery('.tools').empty();
+      jQuery('.tools').hide();
       jQuery('#surveyQuestion').empty();
       jQuery('#survey').empty();
       jQuery('#surveyResult').empty();
       jQuery('#surveyResult').hide();
-      jQuery('.tools').empty();
-      jQuery('.tools').hide();
+      jQuery('#legend').empty();
+      jQuery('#legend').hide();
+      jQuery('#totalVotes').empty();
+      jQuery('#totalVotes').hide();
 
       jQuery('#surveyQuestion').html(survey.question);
       if ((forceResultDisplay === 'true') || survey.answered) {
@@ -95,8 +99,8 @@
 
     function displaySurveyResultsHtml(survey) {
       buildAndDisplayToolbar();
-      buildChart('pie', survey);
-      jQuery('#surveyResult').show();
+      buildAndDisplayChart('pie', survey);
+      buildAndDisplayTotalVotes(survey);
     }
 
     function buildAndDisplayToolbar() {
@@ -111,30 +115,28 @@
 
       jQuery("#chartType").change(function () {
         var chartType = jQuery('#chartType option:selected').val();
-        buildChart(chartType);
+        buildAndDisplayChart(chartType);
       });
 
       jQuery('.tools').show();
     }
 
-    function buildChart(chartType, survey) {
+    function buildAndDisplayChart(chartType, survey) {
       chartType = chartType || 'pie';
       survey = survey || surveys[currentSurveyIndex];
-
-      var data = [];
-      var resultsByAnswer = survey.result.resultsByAnswer;
-      for( var i = 0; i < resultsByAnswer.length; i++) {
-        data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
-      }
 
       if (chartType == 'pie') {
         var data = [];
         var resultsByAnswer = survey.result.resultsByAnswer;
         for( var i = 0; i < resultsByAnswer.length; i++) {
-          data[i] = { label: resultsByAnswer[i].answer, data: resultsByAnswer[i].result }
+          var label = resultsByAnswer[i].answer + ' (' + (resultsByAnswer[i].result / survey.result.resultsCount) * 100 + '%)';
+          data[i] = { label: label, data: resultsByAnswer[i].result }
         }
 
         jQuery.plot(jQuery("#surveyResult"), data, {
+            legend: {
+              container: jQuery('#legend')
+            },
             series: {
               pie: {
                 show: true
@@ -142,20 +144,19 @@
             }
         });
       } else if (chartType == 'bars') {
-
-        var data = [{label: "yo", data: [[0, 145]]}, {label:"tada", data:[[1, 1000]]}];
-
         var data = [];
         var resultsByAnswer = survey.result.resultsByAnswer;
         for( var i = 0; i < resultsByAnswer.length; i++) {
-          data[i] = { label: survey.answers[i], data: [[i, resultsByAnswer[i].result]] };
+          var label = resultsByAnswer[i].answer + ' (' + (resultsByAnswer[i].result / survey.result.resultsCount) * 100 + '%)';
+          data[i] = { label: label, data: [[i, resultsByAnswer[i].result]] };
         }
 
         jQuery.plot(jQuery("#surveyResult"), data, {
           legend: {
             show: true,
             margin: 10,
-            backgroundOpacity: 0.5
+            backgroundOpacity: 0.5,
+            container: jQuery('#legend')
           },
           series: {
             bars: { show: true }
@@ -171,6 +172,14 @@
           }
         });
       }
+
+      jQuery('#surveyResult').show();
+      jQuery('#legend').show();
+    }
+
+    function buildAndDisplayTotalVotes(survey) {
+      var totalVotes = prefs.getMsg('label.survey.total.votes') + ' ' + survey.result.resultsCount;
+      jQuery('#totalVotes').html(totalVotes).show();
     }
 
     function createNavigationBar() {
@@ -291,6 +300,10 @@
       <div id="survey">
       </div>
       <div id="surveyResult" style="width: 180px; height: 150px;">
+      </div>
+      <div id="legend">
+      </div>
+      <div id="totalVotes">
       </div>
 
       <div class="navigationBar">
