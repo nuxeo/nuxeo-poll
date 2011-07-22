@@ -5,8 +5,8 @@
   class="actions_block"
   id="#{widget.id}">
 
-  <h:outputText value="#{messages['label.summary.survey.status']} "/>
-  <div>
+  <div class="surveyStatusLabel"><h:outputText value="#{messages['label.summary.survey.status']} "/></div>
+  <div class="surveyStatus">
     <c:if test="#{surveyActions.toSurvey(value).inProject}">
       <h:outputText styleClass="status project" value="#{messages[currentDocument.currentLifeCycleState]}" />
       <h:commandLink styleClass="surveyStatusAction" value="#{messages['command.survey.open']}"
@@ -26,4 +26,5 @@
     </c:if>
 
   </div>
+  <div style="clear:both;"></div>
 </div>

@@ -15,6 +15,7 @@
 <html>
   <head>
   <link rel="stylesheet" type="text/css" href="${specDirectoryUrl}gadget-common.css"/>
+  <link rel="stylesheet" type="text/css" href="surveys.css"/>
 
   <!-- insert JS Context -->
   ${jsContext}
@@ -214,8 +215,7 @@
     }
 
     function displayNoSurvey() {
-      var htmlContent = '<p class="noSurveyLabel">' + prefs.getMsg('label.no.open.survey') + '</p>';
-      jQuery('#surveyQuestion').html(htmlContent);
+      jQuery('#noSurveyLabel').html(prefs.getMsg('label.no.open.survey'));
     }
 
     function answerSurvey() {
@@ -293,6 +293,7 @@
     <#include "default-request-controls.ftl"/>
 
     <div class="tools"></div>
+    <div id="noSurveyLabel"></div>
 
     <div id="content">
 
@@ -308,6 +309,7 @@
 
       <div class="navigationBar">
       </div>
+      <div style="clear:both;"></div>
     </div>
 
   </body>
