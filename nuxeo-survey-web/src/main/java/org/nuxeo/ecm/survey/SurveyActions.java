@@ -127,4 +127,19 @@ public class SurveyActions implements Serializable {
         return view;
     }
 
+    public boolean hasUnansweredOpenSurveys() {
+        return !surveyService.getUnansweredOpenSurveys(documentManager).isEmpty();
+    }
+
+    public boolean displayResults(DocumentModel surveyDoc) {
+        Survey survey = toSurvey(surveyDoc);
+        if (survey.isInProject()) {
+            return false;
+        } else if (survey.isOpen()) {
+            SurveyResult surveyResult = surveyService.getResultFor(survey);
+            return surveyResult.getResultsCount() != 0;
+        }
+        return true;
+    }
+
 }

@@ -103,6 +103,7 @@
 
 </c:if>
 
+<c:if test="#{surveyActions.hasUnansweredOpenSurveys()}">
   <div>
     <div class="gadgets-gadget-chrome gadgets survey-clipboard"></div>
 
@@ -120,5 +121,6 @@
       });
     </script>
   </div>
+</c:if>
 
 </div>

@@ -35,6 +35,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +120,18 @@ public class SurveyServiceImpl implements SurveyService {
         } catch (ClientException e) {
             throw new ClientRuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Survey> getUnansweredOpenSurveys(CoreSession session) {
+        List<Survey> surveys = getOpenSurveys(session);
+        for (Iterator<Survey> it = surveys.iterator(); it.hasNext();) {
+            Survey survey = it.next();
+            if (hasUserAnswered(session.getPrincipal().getName(), survey)) {
+                it.remove();
+            }
+        }
+        return surveys;
     }
 
     @Override

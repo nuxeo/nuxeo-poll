@@ -99,7 +99,7 @@
         </property>
       </properties>
       <widgetModes>
-        <mode value="view">#{surveyActions.toSurvey(currentDocument).inProject ? 'hidden' : 'view'}</mode>
+        <mode value="view">#{surveyActions.displayResults(currentDocument) ? 'view' : 'hidden'}</mode>
       </widgetModes>
     </widget>
 

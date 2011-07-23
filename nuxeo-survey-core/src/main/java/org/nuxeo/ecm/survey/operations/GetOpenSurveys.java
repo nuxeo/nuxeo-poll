@@ -66,14 +66,22 @@ public class GetOpenSurveys {
     @OperationMethod
     public Blob run() throws ClientException, IOException {
         JSONArray array = new JSONArray();
-        List<Survey> availableSurveys = surveyService.getOpenSurveys(session);
-        for (Survey survey : availableSurveys) {
-            writeSurvey(array, survey);
+        List<Survey> availableSurveys;
+
+        if (onlyUnansweredSurveys) {
+            availableSurveys = surveyService.getUnansweredOpenSurveys(session);
+            for (Survey survey : availableSurveys) {
+                writeUnansweredSurvey(array, survey);
+            }
+        } else {
+            availableSurveys = surveyService.getOpenSurveys(session);
+            for (Survey survey : availableSurveys) {
+                writeSurvey(array, survey);
+            }
         }
 
         JSONObject object = new JSONObject();
         object.put("surveys", array);
-
         return new InputStreamBlob(new ByteArrayInputStream(
                 object.toString().getBytes("UTF-8")), "application/json");
     }
@@ -82,9 +90,7 @@ public class GetOpenSurveys {
             throws ClientException, IOException {
         NuxeoPrincipal principal = (NuxeoPrincipal) session.getPrincipal();
         if (surveyService.hasUserAnswered(principal.getName(), survey)) {
-            if (!onlyUnansweredSurveys) {
-                writeAnsweredSurvey(array, survey);
-            }
+            writeAnsweredSurvey(array, survey);
         } else {
             writeUnansweredSurvey(array, survey);
         }

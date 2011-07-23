@@ -46,6 +46,12 @@ public interface SurveyService {
     List<Survey> getOpenSurveys(CoreSession session);
 
     /**
+     * Returns all unanswered open surveys available with the given
+     * {@code session}.
+     */
+    List<Survey> getUnansweredOpenSurveys(CoreSession session);
+
+    /**
      * Returns {@code true} if the user with the given {@code username} has
      * already answer the {@code survey}, {@code false otherwise}.
      */
