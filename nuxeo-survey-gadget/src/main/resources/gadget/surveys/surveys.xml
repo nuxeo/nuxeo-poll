@@ -53,17 +53,8 @@
       if (typeof hideNavigationBar === 'undefined') {
         hideNavigationBar = false;
       }
-      jQuery('.tools').empty();
-      jQuery('.tools').hide();
-      jQuery('#surveyQuestion').empty();
-      jQuery('#survey').empty();
-      jQuery('#surveyResult').empty();
-      jQuery('#surveyResult').hide();
-      jQuery('#legend').empty();
-      jQuery('#legend').hide();
-      jQuery('#totalVotes').empty();
-      jQuery('#totalVotes').hide();
 
+      emptyAndHideEverything();
       jQuery('#surveyQuestion').html(survey.question);
       if ((forceResultDisplay === 'true') || survey.answered) {
         displaySurveyResultsHtml(survey);
@@ -77,6 +68,19 @@
       }
 
       gadgets.window.adjustHeight();
+    }
+
+    function emptyAndHideEverything() {
+      jQuery('.tools').empty();
+      jQuery('.tools').hide();
+      jQuery('#surveyQuestion').empty();
+      jQuery('#survey').empty();
+      jQuery('#surveyResult').empty();
+      jQuery('#surveyResult').hide();
+      jQuery('#legend').empty();
+      jQuery('#legend').hide();
+      jQuery('#totalVotes').empty();
+      jQuery('#totalVotes').hide();
     }
 
     function displaySurveyQuestionHtml(survey) {
@@ -118,8 +122,6 @@
         var chartType = jQuery('#chartType option:selected').val();
         buildAndDisplayChart(chartType);
       });
-
-      jQuery('.tools').show();
     }
 
     function buildAndDisplayChart(chartType, survey) {
@@ -130,7 +132,7 @@
         var data = [];
         var resultsByAnswer = survey.result.resultsByAnswer;
         for( var i = 0; i < resultsByAnswer.length; i++) {
-          var label = resultsByAnswer[i].answer + ' (' + (resultsByAnswer[i].result / survey.result.resultsCount) * 100 + '%)';
+          var label = generateLabel(resultsByAnswer[i].answer, resultsByAnswer[i].result, survey.result.resultsCount);
           data[i] = { label: label, data: resultsByAnswer[i].result }
         }
 
@@ -148,7 +150,7 @@
         var data = [];
         var resultsByAnswer = survey.result.resultsByAnswer;
         for( var i = 0; i < resultsByAnswer.length; i++) {
-          var label = resultsByAnswer[i].answer + ' (' + (resultsByAnswer[i].result / survey.result.resultsCount) * 100 + '%)';
+          var label = generateLabel(resultsByAnswer[i].answer, resultsByAnswer[i].result, survey.result.resultsCount);
           data[i] = { label: label, data: [[i, resultsByAnswer[i].result]] };
         }
 
@@ -160,7 +162,9 @@
             container: jQuery('#legend')
           },
           series: {
-            bars: { show: true }
+            bars: {
+              show: true
+            }
           },
           xaxis: {
             min: 0,
@@ -176,6 +180,14 @@
 
       jQuery('#surveyResult').show();
       jQuery('#legend').show();
+    }
+
+    function generateLabel(answer, result, resultsCount) {
+      var label = '(0%)';
+      if (!isNaN(result / resultsCount)) {
+        label = answer + ' (' + (result / resultsCount) * 100 + '%)';
+      }
+      return label;
     }
 
     function buildAndDisplayTotalVotes(survey) {
@@ -215,7 +227,9 @@
     }
 
     function displayNoSurvey() {
+      emptyAndHideEverything();
       jQuery('#noSurveyLabel').html(prefs.getMsg('label.no.open.survey'));
+      gadgets.window.adjustHeight();
     }
 
     function answerSurvey() {
