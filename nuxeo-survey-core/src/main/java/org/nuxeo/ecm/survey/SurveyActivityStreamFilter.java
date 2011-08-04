@@ -72,8 +72,8 @@ public class SurveyActivityStreamFilter implements ActivityStreamFilter {
     @SuppressWarnings("unchecked")
     @Override
     public List<Activity> query(ActivityStreamService activityStreamService,
-            Map<String, Serializable> parameters, Integer pageSize,
-            Integer currentPage) {
+            Map<String, Serializable> parameters, int pageSize,
+            int currentPage) {
         EntityManager em = ((ActivityStreamServiceImpl) activityStreamService).getEntityManager();
         QueryType queryType = (QueryType) parameters.get(QUERY_TYPE_PARAMETER);
         if (queryType == null) {
