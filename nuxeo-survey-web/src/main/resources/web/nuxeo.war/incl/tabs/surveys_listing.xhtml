@@ -3,17 +3,12 @@
   xmlns:c="http://java.sun.com/jstl/core"
   xmlns:nxd="http://nuxeo.org/nxweb/document"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
   xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
 
-  <a4j:outputPanel xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:nxl="http://nuxeo.org/nxforms/layout"
-    xmlns:nxu="http://nuxeo.org/nxweb/util"
-    xmlns:c="http://java.sun.com/jstl/core"
-    id="surveysPanel">
+  <a4j:outputPanel id="surveysPanel">
 
     <f:subview id="createSurveyView" rendered="#{surveyActions.showCreateForm}">
       <h3>
