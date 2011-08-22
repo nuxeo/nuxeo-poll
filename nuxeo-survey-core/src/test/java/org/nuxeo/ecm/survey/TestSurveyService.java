@@ -29,6 +29,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.activity.Activity;
+import org.nuxeo.ecm.activity.ActivityHelper;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -204,12 +205,13 @@ public class TestSurveyService extends AbstractSurveyTest {
         List<Activity> activities = activityStreamService.query(
                 ActivityStreamService.ALL_ACTIVITIES, null);
         assertNotNull(activities);
+        System.out.println(activities.toString());
         assertEquals(1, activities.size());
         Activity activity = activities.get(0);
         assertEquals(ANSWER_SURVEY_VERB, activity.getVerb());
         assertEquals(survey1.getId(), activity.getTarget());
         assertEquals("No", activity.getObject());
-        assertEquals(session.getPrincipal().getName(), activity.getActor());
+        assertEquals(ActivityHelper.createUserActivityObject(session.getPrincipal()), activity.getActor());
 
         assertTrue(surveyService.hasUserAnswered(
                 session.getPrincipal().getName(), survey1));

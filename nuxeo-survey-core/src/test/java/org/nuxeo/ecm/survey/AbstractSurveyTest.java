@@ -32,6 +32,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.EventService;
+import org.nuxeo.ecm.core.event.EventServiceAdmin;
 import org.nuxeo.ecm.core.persistence.PersistenceProvider;
 import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
@@ -58,6 +59,15 @@ public abstract class AbstractSurveyTest {
 
     @Inject
     protected EventService eventService;
+
+    @Inject
+    protected EventServiceAdmin eventServiceAdmin;
+
+    @Before
+    public void disableActivityStreamListener() {
+        eventServiceAdmin.setListenerEnabledFlag("activityStreamListener",
+                false);
+    }
 
     @Before
     public void cleanupDatabase() throws ClientException {
