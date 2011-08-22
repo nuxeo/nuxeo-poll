@@ -42,18 +42,14 @@ import java.util.Map;
 
 import org.nuxeo.common.utils.Path;
 import org.nuxeo.ecm.activity.Activity;
-import org.nuxeo.ecm.activity.ActivityEventContext;
-import org.nuxeo.ecm.activity.ActivityImpl;
+import org.nuxeo.ecm.activity.ActivityBuilder;
+import org.nuxeo.ecm.activity.ActivityHelper;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.ClientRuntimeException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PathRef;
-import org.nuxeo.ecm.core.event.Event;
-import org.nuxeo.ecm.core.event.EventContext;
-import org.nuxeo.ecm.core.event.EventService;
-import org.nuxeo.ecm.core.event.impl.EventImpl;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -67,8 +63,6 @@ public class SurveyServiceImpl implements SurveyService {
     public static final String SURVEYS_CONTAINER_NAME = "surveysContainer";
 
     protected ActivityStreamService activityStreamService;
-
-    protected EventService eventService;
 
     @Override
     public DocumentModel getSurveysContainer(DocumentModel doc) {
@@ -141,7 +135,8 @@ public class SurveyServiceImpl implements SurveyService {
         Map<String, Serializable> parameters = new HashMap<String, Serializable>();
         parameters.put(QUERY_TYPE_PARAMETER, ACTOR_ANSWERS_FOR_SURVEY);
         parameters.put(SURVEY_ID_PARAMETER, survey.getId());
-        parameters.put(ACTOR_PARAMETER, username);
+        parameters.put(ACTOR_PARAMETER,
+                ActivityHelper.createUserActivityObject(username));
         List<Activity> activities = activityStreamService.query(
                 SurveyActivityStreamFilter.ID, parameters);
         return !activities.isEmpty();
@@ -149,32 +144,16 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public void answer(String username, Survey survey, int answerIndex) {
-        Activity activity = new ActivityImpl();
-        activity.setVerb(ANSWER_SURVEY_VERB);
-        activity.setActor(username);
-        activity.setTarget(survey.getId());
-        activity.setObject(getAnswer(survey, answerIndex));
-        activity.setPublishedDate(new Date());
+        Activity activity = new ActivityBuilder().verb(ANSWER_SURVEY_VERB).actor(
+                ActivityHelper.createUserActivityObject(username)).target(
+                survey.getId()).object(getAnswer(survey, answerIndex)).build();
 
-        DocumentModel surveyDoc = survey.getSurveyDocument();
-        CoreSession session = surveyDoc.getCoreSession();
-        EventContext activityEventContext = new ActivityEventContext(session,
-                session.getPrincipal(), activity);
-        Event event = new EventImpl("surveyAnswered", activityEventContext);
-        fireEvent(event);
+        getActivityStreamService().addActivity(activity);
     }
 
     private String getAnswer(Survey survey, int answerIndex) {
         String[] answers = survey.getAnswers();
         return answers.length > answerIndex ? answers[answerIndex] : null;
-    }
-
-    private void fireEvent(Event event) {
-        try {
-            getEventService().fireEvent(event);
-        } catch (ClientException e) {
-            throw new ClientRuntimeException(e);
-        }
     }
 
     @Override
@@ -269,23 +248,6 @@ public class SurveyServiceImpl implements SurveyService {
             }
         }
         return activityStreamService;
-    }
-
-    protected EventService getEventService() throws ClientRuntimeException {
-        if (eventService == null) {
-            try {
-                eventService = Framework.getService(EventService.class);
-            } catch (Exception e) {
-                final String errMsg = "Error connecting to EventService. "
-                        + e.getMessage();
-                throw new ClientRuntimeException(errMsg, e);
-            }
-            if (eventService == null) {
-                throw new ClientRuntimeException(
-                        "EventService service not bound");
-            }
-        }
-        return eventService;
     }
 
 }

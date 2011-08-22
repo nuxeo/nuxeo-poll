@@ -41,9 +41,14 @@
       </dependency>
 
       <dependency>
-        <groupId>org.nuxeo.ecm.platform</groupId>
+        <groupId>org.nuxeo.ecm.social</groupId>
         <artifactId>nuxeo-activity</artifactId>
         <version>${nuxeo.features.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.ecm.platform</groupId>
+        <artifactId>nuxeo-platform-contentview-jsf</artifactId>
+          <version>${nuxeo.features.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
