@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.poll.core.life.cycles">
+
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+    point="lifecycle">
+
+    <lifecycle name="pollLifeCycle" defaultInitial="project">
+      <transitions>
+        <transition name="open" destinationState="open">
+          <description>Open the poll</description>
+        </transition>
+        <transition name="close" destinationState="closed">
+          <description>Close the open poll</description>
+        </transition>
+        <transition name="delete" destinationState="deleted">
+          <description>Move the poll to trash (temporary delete)</description>
+        </transition>
+        <transition name="undelete" destinationState="project">
+          <description>Recover the poll from trash</description>
+        </transition>
+      </transitions>
+      <states>
+        <state name="project" description="Default state" initial="true">
+          <transitions>
+            <transition>delete</transition>
+            <transition>open</transition>
+          </transitions>
+        </state>
+        <state name="open" description="Poll is open">
+          <transitions>
+            <transition>close</transition>
+          </transitions>
+        </state>
+        <state name="closed" description="Poll is closed">
+          <transitions>
+            <transition>delete</transition>
+          </transitions>
+        </state>
+        <state name="deleted" description="Poll is deleted">
+          <transitions>
+            <transition>undelete</transition>
+          </transitions>
+        </state>
+      </states>
+    </lifecycle>
+  </extension>
+
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+    point="types">
+
+    <types>
+      <type name="Poll">pollLifeCycle</type>
+    </types>
+
+  </extension>
+
+</component>

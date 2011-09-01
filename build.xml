@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="nuxeo-survey" default="usage" basedir=".">
+<project name="nuxeo-poll" default="usage" basedir=".">
 
   <property file="build.properties"/>
 
@@ -16,12 +16,12 @@
 
   <target name="usage">
     <echo message="usage: ant [build|deploy|web]" />
-    <echo message="ant build              => Build Nuxeo Survey" />
-    <echo message="ant build-with-tests   => Build and Test Nuxeo Survey" />
-    <echo message="ant deploy-tomcat      => Build Nuxeo Survey and deploy it on a Tomcat instance" />
+    <echo message="ant build              => Build Nuxeo Poll" />
+    <echo message="ant build-with-tests   => Build and Test Nuxeo Poll" />
+    <echo message="ant deploy-tomcat      => Build Nuxeo Poll and deploy it on a Tomcat instance" />
   </target>
 
-  <target name="build" depends="build-unix,build-windows" description="Build Nuxeo Survey"/>
+  <target name="build" depends="build-unix,build-windows" description="Build Nuxeo Poll"/>
   <target name="build-unix" if="osfamily-unix">
     <exec executable="mvn" failonerror="true">
       <arg line="clean install -Dmaven.test.skip=true ${mvn.opts}"/>
@@ -38,7 +38,7 @@
     </exec>
   </target>
 
-  <target name="build-with-tests" depends="build-with-tests-unix,build-with-tests-windows" description="Build Nuxeo Survey"/>
+  <target name="build-with-tests" depends="build-with-tests-unix,build-with-tests-windows" description="Build Nuxeo Poll"/>
   <target name="build-with-tests-unix" if="osfamily-unix">
     <exec executable="mvn" failonerror="true">
       <arg line="clean install ${mvn.opts}"/>

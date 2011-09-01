@@ -1,0 +1,30 @@
+<div xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  class="actions_block"
+  id="#{widget.id}">
+
+  <div class="pollStatusLabel"><h:outputText value="#{messages['label.summary.poll.status']} "/></div>
+  <div class="pollStatus">
+    <c:if test="#{pollActions.toPoll(value).inProject}">
+      <h:outputText styleClass="status project" value="#{messages[currentDocument.currentLifeCycleState]}" />
+      <h:commandLink styleClass="pollStatusAction" value="#{messages['command.poll.open']}"
+        action="#{pollActions.openPoll(value)}"
+        immediate="true" />
+    </c:if>
+
+    <c:if test="#{pollActions.toPoll(value).open}">
+      <h:outputText styleClass="status open" value="#{messages[currentDocument.currentLifeCycleState]}" />
+      <h:commandLink styleClass="pollStatusAction" value="#{messages['command.poll.close']}"
+        action="#{pollActions.closePoll(value)}"
+        immediate="true" />
+    </c:if>
+
+    <c:if test="#{pollActions.toPoll(value).closed}">
+      <h:outputText styleClass="status closed" value="#{messages[currentDocument.currentLifeCycleState]}" />
+    </c:if>
+
+  </div>
+  <div style="clear:both;"></div>
+</div>

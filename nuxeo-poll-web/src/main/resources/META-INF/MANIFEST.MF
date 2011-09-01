@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 1
+Bundle-Name: Nuxeo Poll Web
+Bundle-SymbolicName: org.nuxeo.ecm.poll.web;singleton:=true
+Bundle-Vendor: Nuxeo
+Bundle-Version: 1.0.0
+Nuxeo-Component: OSGI-INF/ui-types-contrib.xml,
+ OSGI-INF/contentviews-contrib.xml,
+ OSGI-INF/layouts-contrib.xml,
+ OSGI-INF/actions-contrib.xml

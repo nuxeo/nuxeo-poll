@@ -7,37 +7,37 @@
     <version>5.4.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>nuxeo-survey-parent</artifactId>
-  <name>Nuxeo Survey Parent</name>
-  <description>Nuxeo Survey Parent</description>
+  <artifactId>nuxeo-poll-parent</artifactId>
+  <name>Nuxeo Poll Parent</name>
+  <description>Nuxeo Poll Parent</description>
   <packaging>pom</packaging>
 
   <properties>
-    <nuxeo.survey.version>5.4.3-SNAPSHOT</nuxeo.survey.version>
+    <nuxeo.poll.version>5.4.3-SNAPSHOT</nuxeo.poll.version>
   </properties>
 
   <modules>
-    <module>nuxeo-survey-core</module>
-    <module>nuxeo-survey-gadget</module>
-    <module>nuxeo-survey-web</module>
+    <module>nuxeo-poll-core</module>
+    <module>nuxeo-poll-gadget</module>
+    <module>nuxeo-poll-web</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-survey-core</artifactId>
-        <version>${nuxeo.survey.version}</version>
+        <artifactId>nuxeo-poll-core</artifactId>
+        <version>${nuxeo.poll.version}</version>
       </dependency>
       <dependency>
         <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-survey-gadget</artifactId>
-        <version>${nuxeo.survey.version}</version>
+        <artifactId>nuxeo-poll-gadget</artifactId>
+        <version>${nuxeo.poll.version}</version>
       </dependency>
       <dependency>
         <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-survey-web</artifactId>
-        <version>${nuxeo.survey.version}</version>
+        <artifactId>nuxeo-poll-web</artifactId>
+        <version>${nuxeo.poll.version}</version>
       </dependency>
 
       <dependency>

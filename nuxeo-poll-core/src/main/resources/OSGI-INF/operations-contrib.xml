@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.poll.operations"
+  version="1.0">
+
+  <documentation>@author Thomas Roger (troger@nuxeo.com)</documentation>
+
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent"
+    point="operations">
+
+    <operation
+      class="org.nuxeo.ecm.poll.operations.GetPoll" />
+    <operation
+      class="org.nuxeo.ecm.poll.operations.GetOpenPolls" />
+    <operation
+      class="org.nuxeo.ecm.poll.operations.AnswerPoll" />
+
+  </extension>
+
+</component>

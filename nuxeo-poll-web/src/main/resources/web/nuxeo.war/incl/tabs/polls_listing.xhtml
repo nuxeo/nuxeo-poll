@@ -1,0 +1,51 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:nxd="http://nuxeo.org/nxweb/document"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:nxu="http://nuxeo.org/nxweb/util"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout"
+  xmlns:a4j="https://ajax4jsf.dev.java.net/ajax">
+
+  <a4j:outputPanel id="pollsPanel">
+
+    <f:subview id="createPollView" rendered="#{pollActions.showCreateForm}">
+      <h3>
+        <h:outputText value="#{messages['title.create.document']} #{messages['Poll']}" />
+      </h3>
+      <h:form enctype="multipart/form-data" id="document_create">
+        <nxl:documentLayout mode="create" value="#{pollActions.newPoll}" />
+        <input type="hidden" name="parentDocumentPath" value="#{pollActions.pollsContainer.pathAsString}" />
+        <p class="buttonsGadget">
+          <h:commandButton styleClass="button" value="#{messages['command.create']}"
+            action="#{pollActions.createPoll}" id="button_create" />
+          <a4j:commandButton styleClass="button" value="#{messages['command.cancel']}"
+            action="#{pollActions.toggleAndReset()}" immediate="true"
+            reRender="pollsPanel" />
+        </p>
+      </h:form>
+    </f:subview>
+
+    <f:subview id="pollsListingView" rendered="#{!pollActions.showCreateForm}">
+      <div class="action_bar">
+        <h:form>
+          <a4j:commandButton action="#{pollActions.toggleCreateForm()}"
+            value="#{messages['label.poll.create']}"
+            immediate="true" styleClass="button" reRender="pollsPanel" />
+        </h:form>
+        <a4j:status>
+          <f:facet name="start">
+            <h:graphicImage value="/img/standart_waiter.gif" />
+          </f:facet>
+        </a4j:status>
+      </div>
+
+      <nxu:set var="contentViewName" value="polls_listing">
+        <ui:decorate template="/incl/content_view.xhtml">
+        </ui:decorate>
+      </nxu:set>
+    </f:subview>
+  </a4j:outputPanel>
+
+</div>
