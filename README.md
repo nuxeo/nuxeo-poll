@@ -1,6 +1,6 @@
-# Nuxeo Survey
+# Nuxeo Poll
 
-This addon provides survey creation and management in Nuxeo DM, with participation and visualization (of results) through an OpenSocial gadget. 
+This addon provides poll creation and management in Nuxeo DM, with participation and visualization (of results) through an OpenSocial gadget. 
 
 ## Building and deploying
 
@@ -11,7 +11,7 @@ To see the list of all commands available for building and deploying, use the fo
 
 ### How to build
 
-You can build Nuxeo Survey with:
+You can build Nuxeo Poll with:
 
     $ ant build
 
@@ -27,7 +27,7 @@ Configure the build.properties files (starting from the `build.properties.sample
     $ cp build.properties.sample build.properties
     $ vi build.properties
 
-You can then deploy Nuxeo Survey to your Tomcat instance with:
+You can then deploy Nuxeo Poll to your Tomcat instance with:
 
     $ ant deploy-tomcat
 
