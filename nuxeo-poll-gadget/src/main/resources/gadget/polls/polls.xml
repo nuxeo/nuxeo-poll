@@ -15,7 +15,7 @@
 <html>
   <head>
   <link rel="stylesheet" type="text/css" href="${specDirectoryUrl}gadget-common.css"/>
-  <link rel="stylesheet" type="text/css" href="polls.css"/>
+  <link rel="stylesheet" type="text/css" href="${specDirectoryUrl}polls.css"/>
 
   <!-- insert JS Context -->
   ${jsContext}
