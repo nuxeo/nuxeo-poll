@@ -88,11 +88,11 @@
       pollHtml += '<ul>'
       for (var i = 0; i < poll.answers.length; i++) {
         pollHtml += '<li>';
-        pollHtml += '<input type="radio" name="answers" value="' + i + '"';
+          pollHtml += '<label><input type="radio" name="answers" value="' + i + '"';
         if (i == 0) {
           pollHtml += ' checked="checked"';
         }
-        pollHtml += '>' + poll.answers[i];
+        pollHtml += '>' + poll.answers[i] + '</label>';
         pollHtml += '</li>';
       }
       pollHtml += '</ul>';
