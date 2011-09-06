@@ -25,6 +25,8 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.nuxeo.ecm.activity.ActivitiesList;
+import org.nuxeo.ecm.activity.ActivitiesListImpl;
 import org.nuxeo.ecm.activity.Activity;
 import org.nuxeo.ecm.activity.ActivityStreamFilter;
 import org.nuxeo.ecm.activity.ActivityStreamService;
@@ -71,13 +73,13 @@ public class PollActivityStreamFilter implements ActivityStreamFilter {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Activity> query(ActivityStreamService activityStreamService,
-            Map<String, Serializable> parameters, int pageSize,
-            int currentPage) {
+    public ActivitiesList query(ActivityStreamService activityStreamService,
+            Map<String, Serializable> parameters, int offset,
+            int limit) {
         EntityManager em = ((ActivityStreamServiceImpl) activityStreamService).getEntityManager();
         QueryType queryType = (QueryType) parameters.get(QUERY_TYPE_PARAMETER);
         if (queryType == null) {
-            return Collections.emptyList();
+            return new ActivitiesListImpl();
         }
 
         Query query = null;
@@ -96,16 +98,16 @@ public class PollActivityStreamFilter implements ActivityStreamFilter {
         }
 
         if (query == null) {
-            return Collections.emptyList();
+            return new ActivitiesListImpl();
         }
 
-        if (pageSize > 0) {
-            query.setMaxResults(pageSize);
-            if (currentPage > 0) {
-                query.setFirstResult((currentPage - 1) * pageSize);
+        if (limit > 0) {
+            query.setMaxResults(limit);
+            if (offset > 0) {
+                query.setFirstResult(offset);
             }
         }
-        return query.getResultList();
+        return new ActivitiesListImpl(query.getResultList());
     }
 
 }
