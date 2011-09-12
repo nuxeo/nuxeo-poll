@@ -18,6 +18,7 @@
 package org.nuxeo.ecm.poll;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -71,11 +72,16 @@ public class PollActivityStreamFilter implements ActivityStreamFilter {
         // nothing to do for now
     }
 
+    @Override
+    public void handleRemovedActivities(ActivityStreamService activityStreamService, Collection<Serializable> activityIds) {
+        // nothing to do
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public ActivitiesList query(ActivityStreamService activityStreamService,
-            Map<String, Serializable> parameters, int offset,
-            int limit) {
+            Map<String, Serializable> parameters, long offset,
+            long limit) {
         EntityManager em = ((ActivityStreamServiceImpl) activityStreamService).getEntityManager();
         QueryType queryType = (QueryType) parameters.get(QUERY_TYPE_PARAMETER);
         if (queryType == null) {
@@ -102,9 +108,9 @@ public class PollActivityStreamFilter implements ActivityStreamFilter {
         }
 
         if (limit > 0) {
-            query.setMaxResults(limit);
+            query.setMaxResults((int) limit);
             if (offset > 0) {
-                query.setFirstResult(offset);
+                query.setFirstResult((int) offset);
             }
         }
         return new ActivitiesListImpl(query.getResultList());
