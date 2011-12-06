@@ -32,6 +32,8 @@ import org.nuxeo.ecm.activity.Activity;
 import org.nuxeo.ecm.activity.ActivityHelper;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreInstance;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
@@ -170,12 +172,12 @@ public class TestPollService extends AbstractPollTest {
         assertNotNull(polls);
         assertEquals(4, polls.size());
 
-        changeUser("bender");
-        polls = pollService.getOpenPolls(session);
+        CoreSession newSession = openSessionAs("bender");
+        polls = pollService.getOpenPolls(newSession);
         assertNotNull(polls);
         assertEquals(2, polls.size());
 
-        changeUser("Administrator");
+        CoreInstance.getInstance().close(newSession);
     }
 
     protected void addRight(DocumentModel doc, String right,
@@ -228,15 +230,17 @@ public class TestPollService extends AbstractPollTest {
         session.save();
         eventService.waitForAsyncCompletion();
 
-        changeUser("bender");
-        pollService.answer(session.getPrincipal().getName(), poll1, 1);
-        session.save();
+        CoreSession newSession = openSessionAs("bender");
+        pollService.answer(newSession.getPrincipal().getName(), poll1, 1);
+        newSession.save();
         eventService.waitForAsyncCompletion();
+        CoreInstance.getInstance().close(newSession);
 
-        changeUser("fry");
-        pollService.answer(session.getPrincipal().getName(), poll1, 0);
-        session.save();
+        newSession = openSessionAs("fry");
+        pollService.answer(newSession.getPrincipal().getName(), poll1, 0);
+        newSession.save();
         eventService.waitForAsyncCompletion();
+        CoreInstance.getInstance().close(newSession);
 
         PollResult pollResult = pollService.getResultFor(poll1);
         assertNotNull(pollResult);
@@ -247,7 +251,7 @@ public class TestPollService extends AbstractPollTest {
         assertTrue(2L == resultsByAnswer.get("No"));
         assertTrue(1L == resultsByAnswer.get("Yes"));
 
-        changeUser("Administrator");
+        CoreInstance.getInstance().close(newSession);
     }
 
     @Test

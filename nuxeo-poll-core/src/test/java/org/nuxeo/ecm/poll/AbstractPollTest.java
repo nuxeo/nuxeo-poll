@@ -120,8 +120,9 @@ public abstract class AbstractPollTest {
                 null, answers);
     }
 
-    protected void changeUser(String username) {
-        featuresRunner.getFeature(CoreFeature.class).getRepository().switchUser(
+    protected CoreSession openSessionAs(String username) throws ClientException {
+        CoreFeature coreFeature = featuresRunner.getFeature(CoreFeature.class);
+        return coreFeature.getRepository().getRepositoryHandler().openSessionAs(
                 username);
     }
 
