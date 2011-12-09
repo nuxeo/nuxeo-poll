@@ -2,8 +2,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.nuxeo.ecm.platform</groupId>
-    <artifactId>nuxeo-features-parent</artifactId>
+    <groupId>org.nuxeo</groupId>
+    <artifactId>nuxeo-addons-parent</artifactId>
     <version>5.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -21,37 +21,6 @@
     <module>nuxeo-poll-gadget</module>
     <module>nuxeo-poll-web</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-poll-core</artifactId>
-        <version>${nuxeo.poll.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-poll-gadget</artifactId>
-        <version>${nuxeo.poll.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-poll-web</artifactId>
-        <version>${nuxeo.poll.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.nuxeo.ecm.social</groupId>
-        <artifactId>nuxeo-activity</artifactId>
-        <version>${nuxeo.features.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.nuxeo.ecm.platform</groupId>
-        <artifactId>nuxeo-platform-contentview-jsf</artifactId>
-          <version>${nuxeo.features.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <repositories>
     <repository>
