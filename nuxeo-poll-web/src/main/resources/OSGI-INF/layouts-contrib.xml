@@ -78,14 +78,18 @@
 
     <widget name="summary_open_poll" type="template">
       <labels>
-        <label mode="any"></label>
+        <label mode="any">label.summary.poll.status</label>
       </labels>
-      <translated>false</translated>
+      <translated>true</translated>
       <properties widgetMode="any">
         <property name="template">
           /widgets/open_poll_widget_template.xhtml
         </property>
       </properties>
+      <controls mode="any">
+        <control name="handleLabels">true</control>
+        <control name="requireSurroundingForm">true</control>
+      </controls>
     </widget>
 
     <widget name="summary_poll_result" type="template">
@@ -113,7 +117,78 @@
           /widgets/back_to_polls_listing_widget_template.xhtml
         </property>
       </properties>
+      <controls mode="any">
+        <control name="requireSurroundingForm">true</control>
+      </controls>
     </widget>
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+    point="actions">
+
+    <action id="summary_current_document_dublincore">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_current_document_comments">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_current_document_publications">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_current_document_single_tasks">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_current_document_indicators">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_current_document_states">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+    <action id="summary_document_route">
+      <filter-id>isNotPoll</filter-id>
+    </action>
+
+    <action id="summary_poll_result" type="widget" order="200">
+      <category>SUMMARY_PANEL_LEFT</category>
+      <properties>
+        <property name="widgetName">summary_poll_result</property>
+      </properties>
+      <filter-id>isPoll</filter-id>
+    </action>
+
+    <action id="summary_open_poll" type="widget" order="200">
+      <category>SUMMARY_PANEL_RIGHT</category>
+      <properties>
+        <property name="widgetName">summary_open_poll</property>
+      </properties>
+      <filter-id>isPoll</filter-id>
+    </action>
+
+    <action id="summary_back_to_polls_listing" type="widget" order="50">
+      <category>SUMMARY_PANEL_RIGHT</category>
+      <properties>
+        <property name="widgetName">summary_back_to_polls_listing</property>
+      </properties>
+      <filter-id>isPoll</filter-id>
+    </action>
+
+  </extension>
+
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+    point="filters">
+
+    <filter id="isPoll">
+      <rule grant="true">
+        <type>Poll</type>
+      </rule>
+    </filter>
+
+    <filter id="isNotPoll">
+      <rule grant="false">
+        <type>Poll</type>
+      </rule>
+    </filter>
 
   </extension>
 
@@ -177,7 +252,7 @@
       </rows>
     </layout>
 
-    <!-- summary layout -->
+    <!-- deprecated since 5.7.1, here for compat -->
     <layout name="poll_summary_layout">
       <templates>
         <template mode="any">/layouts/layout_summary_template.xhtml</template>

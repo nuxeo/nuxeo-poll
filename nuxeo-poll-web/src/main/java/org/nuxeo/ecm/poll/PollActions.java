@@ -14,6 +14,7 @@ package org.nuxeo.ecm.poll;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
 import static org.jboss.seam.annotations.Install.FRAMEWORK;
+import static org.jboss.seam.international.StatusMessage.Severity;
 import static org.nuxeo.ecm.poll.Constants.SURVEY_DOCUMENT_TYPE;
 
 import java.io.Serializable;
@@ -24,6 +25,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -59,6 +61,9 @@ public class PollActions implements Serializable {
 
     @In(create = true)
     protected transient WebActions webActions;
+
+    @In(create = true, required = false)
+    protected FacesMessages facesMessages;
 
     @In(create = true)
     protected transient PollService pollService;
@@ -113,14 +118,15 @@ public class PollActions implements Serializable {
 
     public void openPoll(DocumentModel poll) throws ClientException {
         pollService.openPoll(toPoll(poll));
+        facesMessages.addFromResourceBundle(Severity.INFO, "label.poll.opened");
     }
 
     public void closePoll(DocumentModel poll) throws ClientException {
         pollService.closePoll(toPoll(poll));
+        facesMessages.addFromResourceBundle(Severity.INFO, "label.poll.closed");
     }
 
-    public String backToPollsListing(DocumentModel poll)
-            throws ClientException {
+    public String backToPollsListing(DocumentModel poll) throws ClientException {
         DocumentModel superSpace = documentManager.getSuperSpace(poll);
         String view = navigationContext.navigateToDocument(superSpace);
         webActions.setCurrentTabIds(SURVEYS_TAB);

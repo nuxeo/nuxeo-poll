@@ -1,30 +1,35 @@
 <div xmlns:nxu="http://nuxeo.org/nxweb/util"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:c="http://java.sun.com/jstl/core"
-  class="actions_block"
   id="#{widget.id}">
 
-  <div class="pollStatusLabel"><h:outputText value="#{messages['label.summary.poll.status']} "/></div>
-  <div class="pollStatus">
-    <c:if test="#{pollActions.toPoll(value).inProject}">
-      <h:outputText styleClass="status project" value="#{messages[currentDocument.currentLifeCycleState]}" />
-      <h:commandLink styleClass="pollStatusAction" value="#{messages['command.poll.open']}"
-        action="#{pollActions.openPoll(value)}"
-        immediate="true" />
+  <c:if test="#{widget.handlingLabels}">
+    <c:if test="#{!empty widget.label}">
+      <ui:include src="/widgets/incl/widget_label_template.xhtml">
+        <ui:param name="labelStyleClass" value="summaryTitle #{widgetProperty_headerStyleClass}" />
+      </ui:include>
     </c:if>
+  </c:if>
 
-    <c:if test="#{pollActions.toPoll(value).open}">
-      <h:outputText styleClass="status open" value="#{messages[currentDocument.currentLifeCycleState]}" />
-      <h:commandLink styleClass="pollStatusAction" value="#{messages['command.poll.close']}"
-        action="#{pollActions.closePoll(value)}"
-        immediate="true" />
-    </c:if>
+  <c:if test="#{pollActions.toPoll(value).inProject}">
+    <h:outputText styleClass="sticker info" value="#{messages[currentDocument.currentLifeCycleState]}" />
+    <h:commandLink value="#{messages['command.poll.open']}"
+      action="#{pollActions.openPoll(value)}"
+      immediate="true" />
+  </c:if>
 
-    <c:if test="#{pollActions.toPoll(value).closed}">
-      <h:outputText styleClass="status closed" value="#{messages[currentDocument.currentLifeCycleState]}" />
-    </c:if>
+  <c:if test="#{pollActions.toPoll(value).open}">
+    <h:outputText styleClass="sticker success" value="#{messages[currentDocument.currentLifeCycleState]}" />
+    <h:commandLink value="#{messages['command.poll.close']}"
+      action="#{pollActions.closePoll(value)}"
+      immediate="true" />
+  </c:if>
 
-  </div>
+  <c:if test="#{pollActions.toPoll(value).closed}">
+    <h:outputText styleClass="sticker" value="#{messages[currentDocument.currentLifeCycleState]}" />
+  </c:if>
+
   <div style="clear:both;"></div>
 </div>
