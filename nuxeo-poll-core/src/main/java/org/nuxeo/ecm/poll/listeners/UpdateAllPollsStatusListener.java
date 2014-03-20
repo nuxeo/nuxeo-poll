@@ -27,7 +27,6 @@ import java.util.List;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
-import org.nuxeo.ecm.core.api.repository.Repository;
 import org.nuxeo.ecm.core.api.repository.RepositoryManager;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
@@ -55,9 +54,9 @@ public class UpdateAllPollsStatusListener implements EventListener {
 
         try {
             RepositoryManager repositoryManager = Framework.getService(RepositoryManager.class);
-            Repository repository = repositoryManager.getDefaultRepository();
+            String repositoryName = repositoryManager.getDefaultRepositoryName();
             UpdatePollsStatus updatePollsStatus = new UpdatePollsStatus(
-                    repository.getName());
+                    repositoryName);
             updatePollsStatus.runUnrestricted();
         } catch (Exception e) {
             throw new ClientException(e);
