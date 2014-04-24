@@ -22,7 +22,7 @@
             action="#{pollActions.createPoll}" id="button_create" />
           <a4j:commandButton styleClass="button" value="#{messages['command.cancel']}"
             action="#{pollActions.toggleAndReset()}" immediate="true"
-            reRender="pollsPanel" />
+            render="pollsPanel" />
         </p>
       </h:form>
     </f:subview>
@@ -32,7 +32,7 @@
         <h:form>
           <a4j:commandButton action="#{pollActions.toggleCreateForm()}"
             value="#{messages['label.poll.create']}"
-            immediate="true" styleClass="button" reRender="pollsPanel" />
+            immediate="true" styleClass="button" render="pollsPanel" />
         </h:form>
         <a4j:status>
           <f:facet name="start">
