@@ -20,12 +20,14 @@ import static org.nuxeo.ecm.poll.Constants.SURVEY_START_DATE_PROPERTY;
 import static org.nuxeo.ecm.poll.PollHelper.toPoll;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.activity.ActivityStreamServiceImpl;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -35,6 +37,11 @@ import org.nuxeo.ecm.core.event.EventService;
 import org.nuxeo.ecm.core.event.EventServiceAdmin;
 import org.nuxeo.ecm.core.persistence.PersistenceProvider;
 import org.nuxeo.ecm.core.test.RepositorySettings;
+import org.nuxeo.ecm.core.work.api.WorkManager;
+import org.nuxeo.runtime.api.Framework;
+import org.nuxeo.runtime.test.runner.Features;
+import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.runtime.transaction.TransactionHelper;
 
 import com.google.inject.Inject;
 
@@ -42,6 +49,8 @@ import com.google.inject.Inject;
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
+@RunWith(FeaturesRunner.class)
+@Features( PollFeature.class)
 public abstract class AbstractPollTest {
 
     @Inject
@@ -72,6 +81,7 @@ public abstract class AbstractPollTest {
     public void cleanupDatabase() throws ClientException {
         ((ActivityStreamServiceImpl) activityStreamService).getOrCreatePersistenceProvider().run(
                 true, new PersistenceProvider.RunVoid() {
+                    @Override
                     public void runWith(EntityManager em) {
                         Query query = em.createQuery("delete from Activity");
                         query.executeUpdate();
@@ -90,13 +100,13 @@ public abstract class AbstractPollTest {
     }
 
     protected Poll createPoll(DocumentModel superSpace, String name,
-            String question, String... answers) throws ClientException {
+            String question, String... answers) throws ClientException, InterruptedException {
         return createPoll(superSpace, name, question, null, null, answers);
     }
 
     protected Poll createPoll(DocumentModel superSpace, String name,
             String question, Date startDate, Date endDate, String... answers)
-            throws ClientException {
+            throws ClientException, InterruptedException {
         DocumentModel poll = session.createDocumentModel(
                 pollService.getPollsContainer(superSpace).getPathAsString(),
                 name, SURVEY_DOCUMENT_TYPE);
@@ -105,14 +115,15 @@ public abstract class AbstractPollTest {
         poll.setPropertyValue(SURVEY_START_DATE_PROPERTY, startDate);
         poll.setPropertyValue(SURVEY_END_DATE_PROPERTY, endDate);
         poll = session.createDocument(poll);
-        session.save(); // fire post commit event listener
-        session.save(); // flush the session to retrieve updated poll
+        TransactionHelper.commitOrRollbackTransaction();
+        Framework.getLocalService(WorkManager.class).awaitCompletion(1500, TimeUnit.MILLISECONDS);
+        TransactionHelper.startTransaction();
         poll = session.getDocument(poll.getRef());
         return toPoll(poll);
     }
 
     protected Poll createOpenPoll(DocumentModel superSpace, String name,
-            String question, String... answers) throws ClientException {
+            String question, String... answers) throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
         return createPoll(superSpace, name, question, twoDaysBefore.toDate(),

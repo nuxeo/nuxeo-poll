@@ -21,7 +21,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.nuxeo.ecm.activity.ActivityStreamService;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationChain;
@@ -30,31 +29,18 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.event.EventService;
-import org.nuxeo.ecm.core.test.CoreFeature;
-import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
-import org.nuxeo.ecm.core.test.annotations.BackendType;
-import org.nuxeo.ecm.core.test.annotations.Granularity;
-import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.poll.AbstractPollTest;
 import org.nuxeo.ecm.poll.Poll;
 import org.nuxeo.ecm.poll.PollService;
 import org.nuxeo.runtime.test.runner.Deploy;
-import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
-import org.nuxeo.runtime.test.runner.LocalDeploy;
-
 import com.google.inject.Inject;
 
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-@RunWith(FeaturesRunner.class)
-@Features(CoreFeature.class)
-@RepositoryConfig(repositoryName = "default", type = BackendType.H2, init = DefaultRepositoryInit.class, user = "Administrator", cleanup = Granularity.METHOD)
-@Deploy({ "org.nuxeo.ecm.core.persistence", "org.nuxeo.ecm.activity",
-        "org.nuxeo.ecm.automation.core", "org.nuxeo.ecm.poll.core" })
-@LocalDeploy("org.nuxeo.ecm.poll.core:poll-test.xml")
+@Deploy({ "org.nuxeo.ecm.automation.core" })
 public class TestPollOperations extends AbstractPollTest {
 
     @Inject

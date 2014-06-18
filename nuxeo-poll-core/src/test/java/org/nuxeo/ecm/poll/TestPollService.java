@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.nuxeo.ecm.activity.Activity;
 import org.nuxeo.ecm.activity.ActivityHelper;
 import org.nuxeo.ecm.activity.ActivityStreamService;
@@ -38,26 +37,11 @@ import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.ACP;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
-import org.nuxeo.ecm.core.test.CoreFeature;
-import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
-import org.nuxeo.ecm.core.test.annotations.BackendType;
-import org.nuxeo.ecm.core.test.annotations.Granularity;
-import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
-import org.nuxeo.runtime.test.runner.Deploy;
-import org.nuxeo.runtime.test.runner.Features;
-import org.nuxeo.runtime.test.runner.FeaturesRunner;
-import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
  */
-@RunWith(FeaturesRunner.class)
-@Features({ CoreFeature.class })
-@RepositoryConfig(repositoryName = "default", type = BackendType.H2, init = DefaultRepositoryInit.class, user = "Administrator", cleanup = Granularity.METHOD)
-@Deploy({ "org.nuxeo.ecm.core.persistence", "org.nuxeo.ecm.activity",
-        "org.nuxeo.ecm.poll.core" })
-@LocalDeploy("org.nuxeo.ecm.poll.core:poll-test.xml")
 public class TestPollService extends AbstractPollTest {
 
     @Test
@@ -74,7 +58,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void pollShouldStoreQuestionAndAnswers() throws ClientException {
+    public void pollShouldStoreQuestionAndAnswers() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
         Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes",
                 "No");
@@ -89,7 +73,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void shouldNotGetInProjectOrClosedPolls() throws ClientException {
+    public void shouldNotGetInProjectOrClosedPolls() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
         Poll poll1 = createPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
@@ -120,7 +104,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void openingAPollShouldSetItsStartDate() throws ClientException {
+    public void openingAPollShouldSetItsStartDate() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
         Poll poll = createPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll);
@@ -134,7 +118,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void closingAPollShouldSetItsEndDate() throws ClientException {
+    public void closingAPollShouldSetItsEndDate() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
         Poll poll = createOpenPoll(ws, "poll1", "Question 1", "Yes",
                 "No");
@@ -149,7 +133,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void shouldGetAllOpenPolls() throws ClientException {
+    public void shouldGetAllOpenPolls() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
         Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
                 "No");
@@ -191,7 +175,7 @@ public class TestPollService extends AbstractPollTest {
 
     @Test
     public void answeringAPollShouldCreateANewActivity()
-            throws ClientException {
+            throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
         Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
                 "No");
@@ -218,7 +202,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void differentUsersCanAnswerAPoll() throws ClientException {
+    public void differentUsersCanAnswerAPoll() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
         Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
                 "No");
@@ -252,7 +236,7 @@ public class TestPollService extends AbstractPollTest {
 
     @Test
     public void shouldChangeStatusToOpenIfDateAfterStartDate()
-            throws ClientException {
+            throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
 
@@ -270,7 +254,7 @@ public class TestPollService extends AbstractPollTest {
 
     @Test
     public void shouldChangeStatusToClosedIfDateAfterEndDate()
-            throws ClientException {
+            throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
 
@@ -287,7 +271,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void shouldNotUpdateStatus() throws ClientException {
+    public void shouldNotUpdateStatus() throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysAfter = now.plusDays(2);
 
