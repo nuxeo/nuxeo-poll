@@ -82,12 +82,10 @@ public class GetOpenPolls {
 
         JSONObject object = new JSONObject();
         object.put("polls", array);
-        return new InputStreamBlob(new ByteArrayInputStream(
-                object.toString().getBytes("UTF-8")), "application/json");
+        return new InputStreamBlob(new ByteArrayInputStream(object.toString().getBytes("UTF-8")), "application/json");
     }
 
-    protected void writePoll(JSONArray array, Poll poll)
-            throws ClientException, IOException {
+    protected void writePoll(JSONArray array, Poll poll) throws ClientException, IOException {
         NuxeoPrincipal principal = (NuxeoPrincipal) session.getPrincipal();
         if (pollService.hasUserAnswered(principal.getName(), poll)) {
             writeAnsweredPoll(array, poll);
@@ -96,14 +94,12 @@ public class GetOpenPolls {
         }
     }
 
-    protected void writeAnsweredPoll(JSONArray array, Poll poll)
-            throws ClientException, IOException {
+    protected void writeAnsweredPoll(JSONArray array, Poll poll) throws ClientException, IOException {
         PollResult pollResult = pollService.getResultFor(poll);
         array.add(toJSON(poll, pollResult, true));
     }
 
-    protected void writeUnansweredPoll(JSONArray array, Poll poll)
-            throws IOException, ClientException {
+    protected void writeUnansweredPoll(JSONArray array, Poll poll) throws IOException, ClientException {
         array.add(toJSON(poll));
     }
 

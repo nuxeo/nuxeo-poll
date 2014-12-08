@@ -42,8 +42,7 @@ public class PollServiceBusinessDelegate implements Serializable {
     protected PollService pollService;
 
     /**
-     * Acquires a new {@link PollService} reference. The related service may
-     * be deployed on a local or remote AppServer.
+     * Acquires a new {@link PollService} reference. The related service may be deployed on a local or remote AppServer.
      *
      * @throws ClientException
      */
@@ -53,8 +52,7 @@ public class PollServiceBusinessDelegate implements Serializable {
             try {
                 pollService = Framework.getService(PollService.class);
             } catch (Exception e) {
-                final String errMsg = "Error connecting to PollService. "
-                        + e.getMessage();
+                final String errMsg = "Error connecting to PollService. " + e.getMessage();
                 throw new ClientException(errMsg, e);
             }
             if (pollService == null) {

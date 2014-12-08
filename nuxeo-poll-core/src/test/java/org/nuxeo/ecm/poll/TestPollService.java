@@ -60,8 +60,7 @@ public class TestPollService extends AbstractPollTest {
     @Test
     public void pollShouldStoreQuestionAndAnswers() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
-        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes",
-                "No");
+        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes", "No");
         assertNotNull(poll);
 
         String question = poll.getQuestion();
@@ -77,16 +76,14 @@ public class TestPollService extends AbstractPollTest {
         DocumentModel ws = createWorkspace("ws1");
         Poll poll1 = createPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
-        Poll poll2 = createPoll(ws, "poll2", "Question 2", "A", "B",
-                "C");
+        Poll poll2 = createPoll(ws, "poll2", "Question 2", "A", "B", "C");
         assertNotNull(poll2);
 
         List<Poll> polls = pollService.getOpenPolls(session);
         assertNotNull(polls);
         assertEquals(0, polls.size());
 
-        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA",
-                "BB", "C");
+        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA", "BB", "C");
         assertNotNull(poll3);
         polls = pollService.getOpenPolls(session);
         assertNotNull(polls);
@@ -120,8 +117,7 @@ public class TestPollService extends AbstractPollTest {
     @Test
     public void closingAPollShouldSetItsEndDate() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll = createOpenPoll(ws, "poll1", "Question 1", "Yes",
-                "No");
+        Poll poll = createOpenPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll);
 
         assertNotNull(poll.getStartDate());
@@ -135,20 +131,16 @@ public class TestPollService extends AbstractPollTest {
     @Test
     public void shouldGetAllOpenPolls() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
-                "No");
+        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
-        Poll poll2 = createOpenPoll(ws, "poll2", "Question 2", "A",
-                "B", "C");
+        Poll poll2 = createOpenPoll(ws, "poll2", "Question 2", "A", "B", "C");
         assertNotNull(poll2);
 
         ws = createWorkspace("ws2");
         addRight(ws, SecurityConstants.READ, "bender");
-        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA",
-                "BB", "C");
+        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA", "BB", "C");
         assertNotNull(poll3);
-        Poll poll4 = createOpenPoll(ws, "poll4", "Question 4", "A",
-                "BBB", "CCC");
+        Poll poll4 = createOpenPoll(ws, "poll4", "Question 4", "A", "BBB", "CCC");
         assertNotNull(poll4);
 
         List<Poll> polls = pollService.getOpenPolls(session);
@@ -162,8 +154,7 @@ public class TestPollService extends AbstractPollTest {
         }
     }
 
-    protected void addRight(DocumentModel doc, String right,
-            String... usersOrGroups) throws ClientException {
+    protected void addRight(DocumentModel doc, String right, String... usersOrGroups) throws ClientException {
         ACP acp = doc.getACP();
         ACL acl = acp.getOrCreateACL();
         for (String userOrGroup : usersOrGroups) {
@@ -174,11 +165,9 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void answeringAPollShouldCreateANewActivity()
-            throws ClientException, InterruptedException {
+    public void answeringAPollShouldCreateANewActivity() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
-        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
-                "No");
+        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
 
         pollService.answer(session.getPrincipal().getName(), poll1, 1);
@@ -186,8 +175,7 @@ public class TestPollService extends AbstractPollTest {
         session.save();
         eventService.waitForAsyncCompletion();
 
-        List<Activity> activities = activityStreamService.query(
-                ActivityStreamService.ALL_ACTIVITIES, null);
+        List<Activity> activities = activityStreamService.query(ActivityStreamService.ALL_ACTIVITIES, null);
         assertNotNull(activities);
         System.out.println(activities.toString());
         assertEquals(1, activities.size());
@@ -197,15 +185,13 @@ public class TestPollService extends AbstractPollTest {
         assertEquals("No", activity.getObject());
         assertEquals(ActivityHelper.createUserActivityObject(session.getPrincipal()), activity.getActor());
 
-        assertTrue(pollService.hasUserAnswered(
-                session.getPrincipal().getName(), poll1));
+        assertTrue(pollService.hasUserAnswered(session.getPrincipal().getName(), poll1));
     }
 
     @Test
     public void differentUsersCanAnswerAPoll() throws ClientException, InterruptedException {
         DocumentModel ws = createWorkspace("ws");
-        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
-                "No");
+        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
 
         pollService.answer(session.getPrincipal().getName(), poll1, 1);
@@ -235,8 +221,7 @@ public class TestPollService extends AbstractPollTest {
     }
 
     @Test
-    public void shouldChangeStatusToOpenIfDateAfterStartDate()
-            throws ClientException, InterruptedException {
+    public void shouldChangeStatusToOpenIfDateAfterStartDate() throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
 
@@ -245,27 +230,23 @@ public class TestPollService extends AbstractPollTest {
         assertNotNull(poll1);
         assertTrue(poll1.isInProject());
 
-        poll1.getPollDocument().setPropertyValue(
-                SURVEY_START_DATE_PROPERTY, twoDaysBefore.toDate());
+        poll1.getPollDocument().setPropertyValue(SURVEY_START_DATE_PROPERTY, twoDaysBefore.toDate());
         poll1 = pollService.updatePollStatus(poll1, now.toDate());
         assertTrue(poll1.isOpen());
 
     }
 
     @Test
-    public void shouldChangeStatusToClosedIfDateAfterEndDate()
-            throws ClientException, InterruptedException {
+    public void shouldChangeStatusToClosedIfDateAfterEndDate() throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Poll poll1 = createPoll(ws, "poll1", "Question 1",
-                twoDaysBefore.toDate(), null, "Yes", "No");
+        Poll poll1 = createPoll(ws, "poll1", "Question 1", twoDaysBefore.toDate(), null, "Yes", "No");
         assertNotNull(poll1);
         assertTrue(poll1.isOpen());
 
-        poll1.getPollDocument().setPropertyValue(SURVEY_END_DATE_PROPERTY,
-                twoDaysBefore.toDate());
+        poll1.getPollDocument().setPropertyValue(SURVEY_END_DATE_PROPERTY, twoDaysBefore.toDate());
         poll1 = pollService.updatePollStatus(poll1, now.toDate());
         assertTrue(poll1.isClosed());
     }
@@ -276,8 +257,7 @@ public class TestPollService extends AbstractPollTest {
         DateTime twoDaysAfter = now.plusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Poll poll1 = createPoll(ws, "poll1", "Question 1",
-                twoDaysAfter.toDate(), null, "Yes", "No");
+        Poll poll1 = createPoll(ws, "poll1", "Question 1", twoDaysAfter.toDate(), null, "Yes", "No");
         assertNotNull(poll1);
 
         assertTrue(poll1.isInProject());
@@ -287,8 +267,7 @@ public class TestPollService extends AbstractPollTest {
         assertFalse(poll1.isOpen());
         assertFalse(poll1.isClosed());
 
-        Poll poll2 = createPoll(ws, "poll2", "Question 2", null,
-                twoDaysAfter.toDate(), "Yes", "No");
+        Poll poll2 = createPoll(ws, "poll2", "Question 2", null, twoDaysAfter.toDate(), "Yes", "No");
         assertNotNull(poll2);
         assertTrue(poll2.isInProject());
         pollService.openPoll(poll2);

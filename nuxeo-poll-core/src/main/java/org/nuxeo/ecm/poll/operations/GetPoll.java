@@ -41,8 +41,7 @@ import org.nuxeo.ecm.poll.PollService;
 /**
  * Operation to get a Poll.
  * <p>
- * Returns also the {@link PollResult} for the poll, If the param
- * {@code withResult} is set to {@code true}.
+ * Returns also the {@link PollResult} for the poll, If the param {@code withResult} is set to {@code true}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3
@@ -70,8 +69,7 @@ public class GetPoll {
         DocumentModel pollDocument = session.getDocument(new IdRef(pollId));
         Poll poll = toPoll(pollDocument);
 
-        boolean alreadyAnswered = pollService.hasUserAnswered(
-                session.getPrincipal().getName(), poll);
+        boolean alreadyAnswered = pollService.hasUserAnswered(session.getPrincipal().getName(), poll);
 
         JSONObject json;
         if (withResult) {
@@ -80,8 +78,7 @@ public class GetPoll {
         } else {
             json = toJSON(poll, alreadyAnswered);
         }
-        return new InputStreamBlob(new ByteArrayInputStream(
-                json.toString().getBytes("UTF-8")), "application/json");
+        return new InputStreamBlob(new ByteArrayInputStream(json.toString().getBytes("UTF-8")), "application/json");
     }
 
 }

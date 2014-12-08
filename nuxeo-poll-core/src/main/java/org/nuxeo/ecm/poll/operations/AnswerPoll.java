@@ -66,8 +66,7 @@ public class AnswerPoll {
         Poll poll = toPoll(pollDocument);
         PollResult pollResult = pollService.getResultFor(poll);
 
-        pollService.answer(session.getPrincipal().getName(), poll,
-                answerIndex);
+        pollService.answer(session.getPrincipal().getName(), poll, answerIndex);
 
         // add the answer to the existing result
         String[] answers = poll.getAnswers();
@@ -77,8 +76,8 @@ public class AnswerPoll {
             result = 0L;
         }
         pollResult.getResultsByAnswer().put(answer, result + 1);
-        return new InputStreamBlob(new ByteArrayInputStream(toJSON(poll,
-                pollResult, true).toString().getBytes("UTF-8")),
+        return new InputStreamBlob(
+                new ByteArrayInputStream(toJSON(poll, pollResult, true).toString().getBytes("UTF-8")),
                 "application/json");
     }
 

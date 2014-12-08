@@ -77,8 +77,7 @@ public class PollActions implements Serializable {
         return getPollsContainer(currentDocument);
     }
 
-    public DocumentModel getPollsContainer(DocumentModel doc)
-            throws ClientException {
+    public DocumentModel getPollsContainer(DocumentModel doc) throws ClientException {
         return pollService.getPollsContainer(doc);
     }
 

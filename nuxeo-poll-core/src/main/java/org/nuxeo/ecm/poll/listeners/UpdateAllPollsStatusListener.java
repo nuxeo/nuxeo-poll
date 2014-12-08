@@ -55,8 +55,7 @@ public class UpdateAllPollsStatusListener implements EventListener {
         try {
             RepositoryManager repositoryManager = Framework.getService(RepositoryManager.class);
             String repositoryName = repositoryManager.getDefaultRepositoryName();
-            UpdatePollsStatus updatePollsStatus = new UpdatePollsStatus(
-                    repositoryName);
+            UpdatePollsStatus updatePollsStatus = new UpdatePollsStatus(repositoryName);
             updatePollsStatus.runUnrestricted();
         } catch (Exception e) {
             throw new ClientException(e);
@@ -75,8 +74,7 @@ public class UpdateAllPollsStatusListener implements EventListener {
         @Override
         public void run() throws ClientException {
             String query = "SELECT * FROM Poll WHERE ecm:currentLifeCycleState <> '%s' AND ecm:currentLifeCycleState <> '%s'";
-            List<DocumentModel> polls = session.query(String.format(query,
-                    SURVEY_CLOSED_STATE, DELETED_STATE));
+            List<DocumentModel> polls = session.query(String.format(query, SURVEY_CLOSED_STATE, DELETED_STATE));
             PollService pollService = getPollService();
             Date now = new Date();
             for (DocumentModel poll : polls) {
@@ -85,8 +83,7 @@ public class UpdateAllPollsStatusListener implements EventListener {
             session.save();
         }
 
-        protected void updateStatus(PollService pollService, Poll poll,
-                Date now) throws ClientException {
+        protected void updateStatus(PollService pollService, Poll poll, Date now) throws ClientException {
             pollService.updatePollStatus(poll, now);
         }
 

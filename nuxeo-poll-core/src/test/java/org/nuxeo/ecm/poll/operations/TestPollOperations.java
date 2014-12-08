@@ -81,16 +81,13 @@ public class TestPollOperations extends AbstractPollTest {
     @Test
     public void shouldReturnOnlyUnansweredPolls() throws Exception {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes",
-                "No");
+        Poll poll1 = createOpenPoll(ws, "poll1", "Question 1", "Yes", "No");
         assertNotNull(poll1);
-        Poll poll2 = createOpenPoll(ws, "poll2", "Question 2", "A",
-                "B", "C");
+        Poll poll2 = createOpenPoll(ws, "poll2", "Question 2", "A", "B", "C");
         assertNotNull(poll2);
 
         ws = createWorkspace("ws2");
-        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA",
-                "BB", "C");
+        Poll poll3 = createOpenPoll(ws, "poll3", "Question 3", "AAA", "BB", "C");
         assertNotNull(poll3);
 
         // answer third poll
@@ -116,16 +113,14 @@ public class TestPollOperations extends AbstractPollTest {
     @Test
     public void shouldAnswerPoll() throws Exception {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes",
-                "No");
+        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes", "No");
         assertNotNull(poll);
 
         OperationContext ctx = new OperationContext(session);
         assertNotNull(ctx);
 
         OperationChain chain = new OperationChain("testPollOperation");
-        chain.add(AnswerPoll.ID).set("pollId", poll.getId()).set(
-                "answerIndex", 1);
+        chain.add(AnswerPoll.ID).set("pollId", poll.getId()).set("answerIndex", 1);
         Blob result = (Blob) service.run(ctx, chain);
         assertNotNull(result);
         String json = result.getString();
@@ -150,8 +145,7 @@ public class TestPollOperations extends AbstractPollTest {
     @Test
     public void shouldGetPollWithoutResult() throws Exception {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes",
-                "No");
+        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes", "No");
         assertNotNull(poll);
 
         OperationContext ctx = new OperationContext(session);
@@ -176,8 +170,7 @@ public class TestPollOperations extends AbstractPollTest {
     @Test
     public void shouldGetPollWithResult() throws Exception {
         DocumentModel ws = createWorkspace("ws1");
-        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes",
-                "No");
+        Poll poll = createOpenPoll(ws, "poll", "Question 1", "Yes", "No");
         assertNotNull(poll);
 
         pollService.answer(session.getPrincipal().getName(), poll, 0);
@@ -188,8 +181,7 @@ public class TestPollOperations extends AbstractPollTest {
         assertNotNull(ctx);
 
         OperationChain chain = new OperationChain("testPollOperation");
-        chain.add(GetPoll.ID).set("pollId", poll.getId()).set(
-                "withResult", true);
+        chain.add(GetPoll.ID).set("pollId", poll.getId()).set("withResult", true);
         Blob result = (Blob) service.run(ctx, chain);
         assertNotNull(result);
         String json = result.getString();

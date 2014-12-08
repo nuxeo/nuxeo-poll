@@ -44,11 +44,9 @@ public class UpdatePollStatusListener implements PostCommitEventListener {
 
     @Override
     public void handleEvent(EventBundle events) throws ClientException {
-        if (events.containsEventName(DOCUMENT_CREATED)
-                || events.containsEventName(DOCUMENT_UPDATED)) {
+        if (events.containsEventName(DOCUMENT_CREATED) || events.containsEventName(DOCUMENT_UPDATED)) {
             for (Event event : events) {
-                if (DOCUMENT_CREATED.equals(event.getName())
-                        || DOCUMENT_UPDATED.equals(event.getName())) {
+                if (DOCUMENT_CREATED.equals(event.getName()) || DOCUMENT_UPDATED.equals(event.getName())) {
                     handleEvent(event);
                 }
             }

@@ -82,19 +82,16 @@ public class PollHelper {
     }
 
     /**
-     * Returns a JSONObject for the given {@code poll} and
-     * {@code pollResult}.
+     * Returns a JSONObject for the given {@code poll} and {@code pollResult}.
      */
-    public static JSONObject toJSON(Poll poll, PollResult pollResult,
-            boolean answered) {
+    public static JSONObject toJSON(Poll poll, PollResult pollResult, boolean answered) {
         JSONObject object = toJSON(poll, answered);
         object.put("result", toJSON(pollResult));
         return object;
     }
 
     /**
-     * Returns a JSONObject for the given unanswered {@code poll} and
-     * {@code pollResult}.
+     * Returns a JSONObject for the given unanswered {@code poll} and {@code pollResult}.
      */
     public static JSONObject toJSON(Poll poll, PollResult pollResult) {
         return toJSON(poll, pollResult, false);

@@ -32,8 +32,7 @@ public class TestUpdateAllPollsStatusListener extends AbstractPollTest {
 
     @Before
     public void disableNotNeededListener() {
-        eventServiceAdmin.setListenerEnabledFlag("updatePollStatusListener",
-                false);
+        eventServiceAdmin.setListenerEnabledFlag("updatePollStatusListener", false);
     }
 
     @Test
@@ -43,20 +42,17 @@ public class TestUpdateAllPollsStatusListener extends AbstractPollTest {
         DateTime twoDaysAfter = now.plusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Poll pollToBeOpen = createPoll(ws, "pollToBeOpen",
-                "Question 1", twoDaysBefore.toDate(), null, "Yes", "No");
+        Poll pollToBeOpen = createPoll(ws, "pollToBeOpen", "Question 1", twoDaysBefore.toDate(), null, "Yes", "No");
         assertNotNull(pollToBeOpen);
         assertTrue(pollToBeOpen.isInProject());
 
-        Poll pollToStayInProject = createPoll(ws,
-                "pollToStayInProject", "Question 2", twoDaysAfter.toDate(),
-                null, "A", "B", "C");
+        Poll pollToStayInProject = createPoll(ws, "pollToStayInProject", "Question 2", twoDaysAfter.toDate(), null,
+                "A", "B", "C");
         assertNotNull(pollToStayInProject);
         assertTrue(pollToStayInProject.isInProject());
 
         EventService eventService = Framework.getService(EventService.class);
-        EventContext context = new EventContextImpl(session,
-                session.getPrincipal());
+        EventContext context = new EventContextImpl(session, session.getPrincipal());
         eventService.fireEvent(UPDATE_SURVEYS_STATUS_EVENT, context);
         session.save();
         eventService.waitForAsyncCompletion();
@@ -78,31 +74,25 @@ public class TestUpdateAllPollsStatusListener extends AbstractPollTest {
         DateTime twoDaysAfter = now.plusDays(2);
 
         DocumentModel ws = createWorkspace("ws");
-        Poll pollToBeClosed = createPoll(ws, "pollToBeClosed",
-                "Question 1", twoDaysBefore.toDate(), twoDaysBefore.toDate(),
-                "Yes", "No");
-        pollToBeClosed = pollService.updatePollStatus(pollToBeClosed,
-                new Date());
+        Poll pollToBeClosed = createPoll(ws, "pollToBeClosed", "Question 1", twoDaysBefore.toDate(),
+                twoDaysBefore.toDate(), "Yes", "No");
+        pollToBeClosed = pollService.updatePollStatus(pollToBeClosed, new Date());
         assertNotNull(pollToBeClosed);
         assertTrue(pollToBeClosed.isOpen());
 
-        Poll pollToStayOpen = createPoll(ws, "pollToStayOpen",
-                "Question 1", twoDaysBefore.toDate(), twoDaysAfter.toDate(),
-                "Yes", "No");
-        pollToStayOpen = pollService.updatePollStatus(pollToStayOpen,
-                new Date());
+        Poll pollToStayOpen = createPoll(ws, "pollToStayOpen", "Question 1", twoDaysBefore.toDate(),
+                twoDaysAfter.toDate(), "Yes", "No");
+        pollToStayOpen = pollService.updatePollStatus(pollToStayOpen, new Date());
         assertNotNull(pollToStayOpen);
         assertTrue(pollToStayOpen.isOpen());
 
-        Poll pollToStayInProject = createPoll(ws,
-                "pollToStayInProject", "Question 1", twoDaysAfter.toDate(),
-                null, "Yes", "No");
+        Poll pollToStayInProject = createPoll(ws, "pollToStayInProject", "Question 1", twoDaysAfter.toDate(), null,
+                "Yes", "No");
         assertNotNull(pollToStayInProject);
         assertTrue(pollToStayInProject.isInProject());
 
         EventService eventService = Framework.getService(EventService.class);
-        EventContext context = new EventContextImpl(session,
-                session.getPrincipal());
+        EventContext context = new EventContextImpl(session, session.getPrincipal());
         eventService.fireEvent(UPDATE_SURVEYS_STATUS_EVENT, context);
         session.save();
         eventService.waitForAsyncCompletion();

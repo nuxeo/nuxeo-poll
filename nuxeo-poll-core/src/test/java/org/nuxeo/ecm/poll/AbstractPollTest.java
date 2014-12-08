@@ -50,7 +50,7 @@ import com.google.inject.Inject;
  * @since 5.4.3
  */
 @RunWith(FeaturesRunner.class)
-@Features( PollFeature.class)
+@Features(PollFeature.class)
 public abstract class AbstractPollTest {
 
     @Inject
@@ -73,14 +73,13 @@ public abstract class AbstractPollTest {
 
     @Before
     public void disableActivityStreamListener() {
-        eventServiceAdmin.setListenerEnabledFlag("activityStreamListener",
-                false);
+        eventServiceAdmin.setListenerEnabledFlag("activityStreamListener", false);
     }
 
     @Before
     public void cleanupDatabase() throws ClientException {
-        ((ActivityStreamServiceImpl) activityStreamService).getOrCreatePersistenceProvider().run(
-                true, new PersistenceProvider.RunVoid() {
+        ((ActivityStreamServiceImpl) activityStreamService).getOrCreatePersistenceProvider().run(true,
+                new PersistenceProvider.RunVoid() {
                     @Override
                     public void runWith(EntityManager em) {
                         Query query = em.createQuery("delete from Activity");
@@ -90,8 +89,7 @@ public abstract class AbstractPollTest {
     }
 
     protected DocumentModel createWorkspace(String name) throws ClientException {
-        DocumentModel doc = session.createDocumentModel(
-                "/default-domain/workspaces", name, "Workspace");
+        DocumentModel doc = session.createDocumentModel("/default-domain/workspaces", name, "Workspace");
         doc.setProperty("dublincore", "title", name);
         doc = session.createDocument(doc);
         session.saveDocument(doc);
@@ -99,16 +97,14 @@ public abstract class AbstractPollTest {
         return doc;
     }
 
-    protected Poll createPoll(DocumentModel superSpace, String name,
-            String question, String... answers) throws ClientException, InterruptedException {
+    protected Poll createPoll(DocumentModel superSpace, String name, String question, String... answers)
+            throws ClientException, InterruptedException {
         return createPoll(superSpace, name, question, null, null, answers);
     }
 
-    protected Poll createPoll(DocumentModel superSpace, String name,
-            String question, Date startDate, Date endDate, String... answers)
-            throws ClientException, InterruptedException {
-        DocumentModel poll = session.createDocumentModel(
-                pollService.getPollsContainer(superSpace).getPathAsString(),
+    protected Poll createPoll(DocumentModel superSpace, String name, String question, Date startDate, Date endDate,
+            String... answers) throws ClientException, InterruptedException {
+        DocumentModel poll = session.createDocumentModel(pollService.getPollsContainer(superSpace).getPathAsString(),
                 name, SURVEY_DOCUMENT_TYPE);
         poll.setPropertyValue(SURVEY_QUESTION_PROPERTY, question);
         poll.setPropertyValue(SURVEY_ANSWERS_PROPERTY, answers);
@@ -122,12 +118,11 @@ public abstract class AbstractPollTest {
         return toPoll(poll);
     }
 
-    protected Poll createOpenPoll(DocumentModel superSpace, String name,
-            String question, String... answers) throws ClientException, InterruptedException {
+    protected Poll createOpenPoll(DocumentModel superSpace, String name, String question, String... answers)
+            throws ClientException, InterruptedException {
         DateTime now = new DateTime();
         DateTime twoDaysBefore = now.minusDays(2);
-        return createPoll(superSpace, name, question, twoDaysBefore.toDate(),
-                null, answers);
+        return createPoll(superSpace, name, question, twoDaysBefore.toDate(), null, answers);
     }
 
     protected CoreSession openSessionAs(String username) throws ClientException {

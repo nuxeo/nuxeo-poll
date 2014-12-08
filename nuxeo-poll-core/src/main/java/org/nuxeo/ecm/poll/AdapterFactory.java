@@ -21,8 +21,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
 
 /**
- * Factory instantiating {@link PollAdapter} adapter if the document type is
- * {@code Poll}.
+ * Factory instantiating {@link PollAdapter} adapter if the document type is {@code Poll}.
  *
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
  * @since 5.4.3

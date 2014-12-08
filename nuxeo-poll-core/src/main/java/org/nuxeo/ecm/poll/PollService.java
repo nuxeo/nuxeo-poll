@@ -46,20 +46,19 @@ public interface PollService {
     List<Poll> getOpenPolls(CoreSession session);
 
     /**
-     * Returns all unanswered open polls available with the given
-     * {@code session}.
+     * Returns all unanswered open polls available with the given {@code session}.
      */
     List<Poll> getUnansweredOpenPolls(CoreSession session);
 
     /**
-     * Returns {@code true} if the user with the given {@code username} has
-     * already answer the {@code poll}, {@code false otherwise}.
+     * Returns {@code true} if the user with the given {@code username} has already answer the {@code poll},
+     * {@code false otherwise}.
      */
     boolean hasUserAnswered(String username, Poll poll);
 
     /**
-     * Store that the user with the given @{code username} has answered the
-     * {@code poll} with the answer number {@code answerIndex}.
+     * Store that the user with the given @{code username} has answered the {@code poll} with the answer number
+     * {@code answerIndex}.
      */
     void answer(String username, Poll poll, int answerIndex);
 
@@ -69,8 +68,7 @@ public interface PollService {
     PollResult getResultFor(Poll poll);
 
     /**
-     * Open the {@code poll}. The poll will be available through the
-     * {@link #getOpenPolls} method.
+     * Open the {@code poll}. The poll will be available through the {@link #getOpenPolls} method.
      * <p>
      * The start date of the poll is set to now.
      *
@@ -88,11 +86,9 @@ public interface PollService {
     Poll closePoll(Poll poll);
 
     /**
-     * Update the status of the {@code poll} according to the given
-     * {@code date}.
+     * Update the status of the {@code poll} according to the given {@code date}.
      * <p>
-     * The poll can be open or closed according to its start date and end
-     * date.
+     * The poll can be open or closed according to its start date and end date.
      */
     Poll updatePollStatus(Poll poll, Date date);
 

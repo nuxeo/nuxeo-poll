@@ -67,10 +67,8 @@ public class PollServiceImpl implements PollService {
     @Override
     public DocumentModel getPollsContainer(DocumentModel doc) {
         try {
-            Path pollsContainerPath = doc.getPath().append(
-                    SURVEYS_CONTAINER_NAME);
-            PathRef pollsContainerRef = new PathRef(
-                    pollsContainerPath.toString());
+            Path pollsContainerPath = doc.getPath().append(SURVEYS_CONTAINER_NAME);
+            PathRef pollsContainerRef = new PathRef(pollsContainerPath.toString());
             CoreSession session = doc.getCoreSession();
             if (session.exists(pollsContainerRef)) {
                 return session.getDocument(pollsContainerRef);
@@ -82,11 +80,9 @@ public class PollServiceImpl implements PollService {
         }
     }
 
-    protected DocumentModel createPollsContainer(CoreSession session,
-            DocumentModel doc) {
+    protected DocumentModel createPollsContainer(CoreSession session, DocumentModel doc) {
         try {
-            DocumentModel pollsContainer = session.createDocumentModel(
-                    doc.getPathAsString(), SURVEYS_CONTAINER_NAME,
+            DocumentModel pollsContainer = session.createDocumentModel(doc.getPathAsString(), SURVEYS_CONTAINER_NAME,
                     "HiddenFolder");
             pollsContainer.setPropertyValue("dc:title", "Polls");
             pollsContainer = session.createDocument(pollsContainer);
@@ -102,8 +98,7 @@ public class PollServiceImpl implements PollService {
         try {
             String query = "SELECT * FROM Document WHERE ecm:primaryType = '%s'"
                     + " AND ecm:currentLifeCycleState = '%s' ORDER BY %s";
-            List<DocumentModel> docs = session.query(String.format(query,
-                    SURVEY_DOCUMENT_TYPE, SURVEY_OPEN_STATE,
+            List<DocumentModel> docs = session.query(String.format(query, SURVEY_DOCUMENT_TYPE, SURVEY_OPEN_STATE,
                     SURVEY_START_DATE_PROPERTY));
 
             List<Poll> polls = new ArrayList<Poll>();
@@ -135,18 +130,16 @@ public class PollServiceImpl implements PollService {
         Map<String, Serializable> parameters = new HashMap<String, Serializable>();
         parameters.put(QUERY_TYPE_PARAMETER, ACTOR_ANSWERS_FOR_SURVEY);
         parameters.put(SURVEY_ID_PARAMETER, poll.getId());
-        parameters.put(ACTOR_PARAMETER,
-                ActivityHelper.createUserActivityObject(username));
-        List<Activity> activities = activityStreamService.query(
-                PollActivityStreamFilter.ID, parameters);
+        parameters.put(ACTOR_PARAMETER, ActivityHelper.createUserActivityObject(username));
+        List<Activity> activities = activityStreamService.query(PollActivityStreamFilter.ID, parameters);
         return !activities.isEmpty();
     }
 
     @Override
     public void answer(String username, Poll poll, int answerIndex) {
         Activity activity = new ActivityBuilder().verb(ANSWER_SURVEY_VERB).actor(
-                ActivityHelper.createUserActivityObject(username)).target(
-                poll.getId()).object(getAnswer(poll, answerIndex)).build();
+                ActivityHelper.createUserActivityObject(username)).target(poll.getId()).object(
+                getAnswer(poll, answerIndex)).build();
 
         getActivityStreamService().addActivity(activity);
     }
@@ -163,8 +156,7 @@ public class PollServiceImpl implements PollService {
         Map<String, Serializable> parameters = new HashMap<String, Serializable>();
         parameters.put(QUERY_TYPE_PARAMETER, ALL_ANSWERS_FOR_SURVEY);
         parameters.put("pollId", poll.getId());
-        List<Activity> activities = activityStreamService.query(
-                PollActivityStreamFilter.ID, parameters);
+        List<Activity> activities = activityStreamService.query(PollActivityStreamFilter.ID, parameters);
 
         Map<String, Long> resultsByAnswer = new LinkedHashMap<String, Long>();
         String[] answers = poll.getAnswers();
@@ -190,8 +182,7 @@ public class PollServiceImpl implements PollService {
             DocumentModel pollDocument = poll.getPollDocument();
             CoreSession session = pollDocument.getCoreSession();
             pollDocument.followTransition(OPEN_SURVEY_TRANSITION);
-            pollDocument.setPropertyValue(SURVEY_START_DATE_PROPERTY,
-                    new Date());
+            pollDocument.setPropertyValue(SURVEY_START_DATE_PROPERTY, new Date());
             pollDocument = session.saveDocument(pollDocument);
             session.save();
             return toPoll(pollDocument);
@@ -206,8 +197,7 @@ public class PollServiceImpl implements PollService {
             DocumentModel pollDocument = poll.getPollDocument();
             CoreSession session = pollDocument.getCoreSession();
             pollDocument.followTransition(CLOSE_SURVEY_TRANSITION);
-            pollDocument.setPropertyValue(SURVEY_END_DATE_PROPERTY,
-                    new Date());
+            pollDocument.setPropertyValue(SURVEY_END_DATE_PROPERTY, new Date());
             pollDocument = session.saveDocument(pollDocument);
             session.save();
             return toPoll(pollDocument);
@@ -232,19 +222,16 @@ public class PollServiceImpl implements PollService {
         return poll;
     }
 
-    protected ActivityStreamService getActivityStreamService()
-            throws ClientRuntimeException {
+    protected ActivityStreamService getActivityStreamService() throws ClientRuntimeException {
         if (activityStreamService == null) {
             try {
                 activityStreamService = Framework.getService(ActivityStreamService.class);
             } catch (Exception e) {
-                final String errMsg = "Error connecting to ActivityStreamService. "
-                        + e.getMessage();
+                final String errMsg = "Error connecting to ActivityStreamService. " + e.getMessage();
                 throw new ClientRuntimeException(errMsg, e);
             }
             if (activityStreamService == null) {
-                throw new ClientRuntimeException(
-                        "ActivityStreamService service not bound");
+                throw new ClientRuntimeException("ActivityStreamService service not bound");
             }
         }
         return activityStreamService;
