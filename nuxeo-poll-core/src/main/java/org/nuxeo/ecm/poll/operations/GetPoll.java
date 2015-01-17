@@ -19,9 +19,6 @@ package org.nuxeo.ecm.poll.operations;
 
 import static org.nuxeo.ecm.poll.PollHelper.toJSON;
 import static org.nuxeo.ecm.poll.PollHelper.toPoll;
-
-import java.io.ByteArrayInputStream;
-
 import net.sf.json.JSONObject;
 
 import org.nuxeo.ecm.automation.core.Constants;
@@ -33,7 +30,7 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
+import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.poll.Poll;
 import org.nuxeo.ecm.poll.PollResult;
 import org.nuxeo.ecm.poll.PollService;
@@ -78,7 +75,7 @@ public class GetPoll {
         } else {
             json = toJSON(poll, alreadyAnswered);
         }
-        return new InputStreamBlob(new ByteArrayInputStream(json.toString().getBytes("UTF-8")), "application/json");
+        return new StringBlob(json.toString(), "application/json");
     }
 
 }

@@ -19,7 +19,6 @@ package org.nuxeo.ecm.poll.operations;
 
 import static org.nuxeo.ecm.poll.PollHelper.toJSON;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
+import org.nuxeo.ecm.core.api.impl.blob.StringBlob;
 import org.nuxeo.ecm.poll.Poll;
 import org.nuxeo.ecm.poll.PollResult;
 import org.nuxeo.ecm.poll.PollService;
@@ -82,7 +81,7 @@ public class GetOpenPolls {
 
         JSONObject object = new JSONObject();
         object.put("polls", array);
-        return new InputStreamBlob(new ByteArrayInputStream(object.toString().getBytes("UTF-8")), "application/json");
+        return new StringBlob(object.toString(), "application/json");
     }
 
     protected void writePoll(JSONArray array, Poll poll) throws ClientException, IOException {
