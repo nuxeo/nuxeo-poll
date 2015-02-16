@@ -8,6 +8,8 @@ import static org.nuxeo.ecm.poll.listeners.UpdateAllPollsStatusListener.UPDATE_S
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +21,6 @@ import org.nuxeo.ecm.core.event.impl.EventContextImpl;
 import org.nuxeo.ecm.poll.AbstractPollTest;
 import org.nuxeo.ecm.poll.Poll;
 import org.nuxeo.runtime.api.Framework;
-import com.google.inject.Inject;
 
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>

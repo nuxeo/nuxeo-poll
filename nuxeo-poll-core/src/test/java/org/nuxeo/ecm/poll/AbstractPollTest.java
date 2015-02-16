@@ -22,6 +22,7 @@ import static org.nuxeo.ecm.poll.PollHelper.toPoll;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -42,8 +43,6 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.transaction.TransactionHelper;
-
-import com.google.inject.Inject;
 
 /**
  * @author <a href="mailto:troger@nuxeo.com">Thomas Roger</a>
